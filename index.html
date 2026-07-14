@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programme Chimie - Premium UI/UX</title>
     
-    <!-- Police unique : Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
-    <!-- SDK Firebase v8 المستقر للمحيط المحلي -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-    <!-- PWA: Manifest + Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="icon" href="icon-192.png">
@@ -302,6 +299,14 @@
             <div class="field-error" id="errAuthGeneral" style="text-align:center;"></div>
             <div class="loader" id="authLoader"></div>
             <button class="btn-prime ripple" onclick="handleAuth()" id="btnAuthAction">Se connecter / S'inscrire</button>
+            
+            <button class="btn-prime ripple" onclick="loginWithGoogle()" style="background-color: #db4437; height: 50px; font-size: 16px; font-weight: 600; border-radius: 14px; margin-top: 4px;">
+                <span class="material-icons">g_mobiledata</span> Connexion avec Google
+            </button>
+            <button class="btn-outline ripple" onclick="loginWithPhone()" style="height: 50px; font-size: 16px; font-weight: 600; border-radius: 14px; margin-top: 2px;">
+                <span class="material-icons" style="font-size: 18px; vertical-align: middle; margin-right: 6px;">phone</span> Connexion par Téléphone
+            </button>
+            <div id="recaptcha-container" style="margin-top: 4px;"></div>
         </div>
     </div>
 
@@ -536,9 +541,9 @@
         },
         L2: {
             modulesCount: 17, semestres: ["S3", "S4"],
-            S3: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication"],
+            S3: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discرètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication"],
             S4: ["Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"],
-            matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"]
+            matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contرؤل de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Méكانismes reactionnels"]
         },
         L3: {
             modulesCount: 10, semestres: ["S5", "S6"],
@@ -745,6 +750,60 @@
         });
     }
 
+    // دوال المصادقة الحديثة المضافة للربط السحابي مع Google والهاتف
+    function loginWithGoogle() {
+        showAuthError('');
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then((result) => {
+            // يتم تخزين بيانات المستخدم الجديد داخل Firestore إذا لم تكن موجودة
+            if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
+                db.collection("users").doc(result.user.uid).set({
+                    email: result.user.email || "",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }).catch((error) => {
+            console.error("Google Auth Error:", error);
+            const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+            showAuthError(dict[error.code] || error.message);
+        });
+    }
+
+    function loginWithPhone() {
+        showAuthError('');
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible'
+            });
+        }
+        
+        const promptMsg = currentLang === 'ar' ? "أدخل رقم هاتفك مع رمز الدولة الكامل (مثال: +222...):" : "Entrez votre numéro de téléphone avec le code pays (ex: +222...):";
+        const codeMsg = currentLang === 'ar' ? "أدخل رمز التحقق (OTP) المكون من 6 أرقام المرسل إليك:" : "Entrez le code de vérification (OTP) reçu :";
+        
+        const phoneNumber = prompt(promptMsg);
+        if (!phoneNumber) return;
+
+        auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+            .then((confirmationResult) => {
+                const verificationCode = prompt(codeMsg);
+                if (!verificationCode) return null;
+                return confirmationResult.confirm(verificationCode);
+            })
+            .then((result) => {
+                if (result && result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
+                    db.collection("users").doc(result.user.uid).set({
+                        email: result.user.phoneNumber || "Phone User",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Phone Auth Error:", error);
+                const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+                showAuthError(dict[error.code] || error.message);
+            });
+    }
+
     function logoutUser() { auth.signOut(); toggleSidebar(false); }
 
     function deleteUserAccount() {
@@ -755,8 +814,8 @@
     }
 
     function syncUserProfileData(user) {
-        document.getElementById('profEmail').textContent = user.email;
-        document.getElementById('profName').textContent = user.email.split('@')[0];
+        document.getElementById('profEmail').textContent = user.email || user.phoneNumber || "Google User";
+        document.getElementById('profName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "User");
         db.collection("users").doc(user.uid).get().then(doc => {
             if(doc.exists && doc.data().createdAt) {
                 document.getElementById('profDate').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
