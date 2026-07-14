@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programme Chimie - Telegram Edition</title>
+    <title>Programme Chimie - Educational Platform</title>
     
-    <!-- Police unique : Cairo -->
+    <!-- الخطوط والأيقونات -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -17,40 +17,42 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-    <!-- PWA: Manifest + Theme Color -->
+    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#17212B">
+    <meta name="theme-color" content="#0F172A">
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
     <style>
         :root {
-            --bg-color: #0E1621;
-            --card-bg: #17212B;
-            --primary: #2481CC;
-            --primary-dark: #1A65A4;
-            --text-main: #F5F6F7;
-            --text-muted: #7F8C9A;
-            --danger: #EF5350;
-            --border-color: #101924;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --primary: #10B981; /* زمردي حديث وجذاب بدلاً من أزرق تليجرام التقليدي */
+            --primary-dark: #059669;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --danger: #EF4444;
+            --border-color: #334155;
             --font-app: 'Cairo', sans-serif;
+            --tg-blue: #38BDF8;
         }
 
         [data-theme="light"] {
-            --bg-color: #FFFFFF;
+            --bg-color: #F8FAFC;
             --card-bg: #FFFFFF;
-            --primary: #527DA3;
-            --primary-dark: #416789;
-            --text-main: #000000;
-            --text-muted: #707579;
-            --danger: #D32F2F;
-            --border-color: #F1F1F1;
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --danger: #EF4444;
+            --border-color: #E2E8F0;
         }
 
         * {
             box-sizing: border-box;
             font-family: var(--font-app);
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -66,7 +68,7 @@
         #splashScreen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #0E1621;
+            background-color: #0F172A;
             z-index: 99999;
             display: flex;
             flex-direction: column;
@@ -76,7 +78,7 @@
         }
         .splash-logo {
             font-size: 64px;
-            color: #2481CC;
+            color: var(--primary);
             animation: pulseLogo 1.5s infinite ease-in-out;
         }
         @keyframes pulseLogo {
@@ -85,7 +87,7 @@
             100% { transform: scale(1); opacity: 0.8; }
         }
         .splash-title {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 800;
             color: #FFFFFF;
             margin-top: 15px;
@@ -99,13 +101,13 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
         }
 
-        /* شريط تليجرام العلوي */
-        .tg-header {
+        /* شريط علوي عصري فريد */
+        .app-header {
             background: var(--card-bg);
-            padding: 14px 16px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -113,13 +115,22 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .tg-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
+        .app-header h2 { font-size: 20px; font-weight: 800; margin: 0; }
 
-        .auth-box { padding: 20px; width: 100%; }
+        .auth-box { padding: 24px; width: 100%; }
         .auth-form {
             background: var(--card-bg); padding: 24px; border-radius: 16px;
             border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; margin-top: 16px;
+        }
+
+        /* حقل لغة متاح قبل تسجيل الدخول */
+        .pre-auth-lang {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 24px;
+            margin-top: 16px;
         }
 
         .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -129,7 +140,9 @@
         .input-wrapper input {
             width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color);
             border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px;
+            transition: border-color 0.2s;
         }
+        .input-wrapper input:focus { border-color: var(--primary); }
         html[dir="rtl"] .input-wrapper input { padding: 14px 44px 14px 14px; }
 
         .field-error { color: var(--danger); font-size: 14px; font-weight: 600; display: none; }
@@ -142,81 +155,125 @@
         .btn-prime:hover { background-color: var(--primary-dark); }
         .btn-prime:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); height: 50px; border-radius: 12px; font-size: 16px; cursor: pointer; }
-        .btn-outline:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* البحث بأسلوب تليجرام */
-        .search-box { padding: 10px 16px; background: var(--bg-color); }
+        /* حقل البحث والمصنفات */
+        .search-box { padding: 12px 20px; background: var(--bg-color); }
         .search-inner { position: relative; display: flex; align-items: center; }
         .search-inner .search-icon { position: absolute; left: 14px; color: var(--text-muted); }
         html[dir="rtl"] .search-inner .search-icon { left: auto; right: 14px; }
         .search-inner input {
-            width: 100%; padding: 10px 14px 10px 44px; background: var(--card-bg);
-            border: none; border-radius: 10px; color: var(--text-main); font-size: 15px;
+            width: 100%; padding: 12px 14px 12px 44px; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 15px;
         }
-        html[dir="rtl"] .search-inner input { padding: 10px 44px 10px 14px; }
+        html[dir="rtl"] .search-inner input { padding: 12px 44px 12px 14px; }
 
-        /* الفلاتر كعلامات تبويب علوية */
-        .filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 10px 16px; border-bottom: 1px solid var(--border-color); }
+        .filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 4px 20px 12px 20px; }
         .filter-chip {
-            background: var(--card-bg); border: none; color: var(--text-muted);
-            padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+            background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+            transition: all 0.2s;
         }
-        .filter-chip.active { background: var(--primary); color: #FFFFFF; }
+        .filter-chip.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
 
-        /* المحادثات بأسلوب تليجرام (قائمة المواد) */
-        .tg-chat-list { display: flex; flex-direction: column; }
-        .tg-chat-item {
-            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s;
+        /* هيكلة المجلدات الأنيقة للسنين */
+        .folders-container { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; }
+        .folder-card {
+            background: var(--card-bg); border-radius: 16px; padding: 18px 20px;
+            border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 16px;
+            transition: transform 0.2s, border-color 0.2s;
         }
-        .tg-chat-item:hover { background: var(--card-bg); }
-        .tg-avatar {
-            width: 48px; height: 48px; border-radius: 50%; background: #2b5278;
-            color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; flex-shrink: 0;
+        .folder-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .folder-card .icon-circle {
+            width: 52px; height: 52px; border-radius: 14px; background: rgba(16, 185, 129, 0.1);
+            color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 28px;
         }
-        .tg-chat-info { flex: 1; min-width: 0; }
-        .tg-chat-top { display: flex; justify-content: space-between; align-items: center; }
-        .tg-chat-name { font-weight: 700; font-size: 16px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tg-chat-meta { font-size: 12px; color: var(--text-muted); }
-        .tg-chat-msg { font-size: 14px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 
-        /* قائمة الملفات الداخلية (تفتح كمستندات داخل محادثة) */
-        .tg-file-box { background: var(--card-bg); border-radius: 12px; padding: 8px; margin: 8px 16px; display: none; }
-        .file-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
-        .file-row:last-child { border-bottom: none; }
-        .file-row .file-open { cursor:pointer; font-weight:600; flex: 1; }
+        /* واجهة عرض القناة لكل مادة */
+        .channel-container { display: none; flex-direction: column; }
+        .channel-banner {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%);
+            padding: 24px 20px; border-bottom: 1px solid var(--border-color); position: relative;
+        }
+        .channel-title { font-size: 22px; font-weight: 800; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px; }
+        .channel-subtitle { font-size: 14px; color: var(--text-muted); }
 
-        /* شريط التنقل السفلي الاحترافي مثل تليجرام */
-        .tg-bottom-nav {
+        .channel-feed { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+        .feed-card {
+            background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
+            padding: 16px; display: flex; flex-direction: column; gap: 12px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .feed-header { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+        .feed-actions { display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px; }
+        .feed-btn {
+            background: transparent; border: none; color: var(--primary); font-weight: 700;
+            font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .feed-btn.delete-btn { color: var(--danger); }
+
+        /* شريط التنقل السفلي الفاخر */
+        .app-bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 600px; height: 60px; background: var(--card-bg);
+            width: 100%; max-width: 600px; height: 70px; background: var(--card-bg);
             border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
         }
-        .tg-nav-item {
+        .nav-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: var(--text-muted); cursor: pointer; font-size: 12px; font-weight: 600; width: 25%; height: 100%;
+            transition: color 0.2s;
         }
-        .tg-nav-item.active { color: var(--primary); }
-        .tg-nav-item .material-icons { font-size: 24px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item .material-icons { font-size: 26px; margin-bottom: 2px; }
 
-        /* واجهة اتصل بنا */
+        /* زر الإضافة العصري (+) المدمج كعنصر طافي حديث فوق الشريط السفلي */
+        .fab-add {
+            position: fixed; bottom: 85px; right: 20px;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--primary); color: #FFFFFF; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .fab-add:hover { transform: scale(1.08); background-color: var(--primary-dark); }
+        html[dir="rtl"] .fab-add { right: auto; left: 20px; }
+
+        /* واجهة اتصل بنا والمطور */
         .contact-view { display: none; padding: 20px; flex-direction: column; gap: 16px; }
-        .contact-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.2s; }
-        .contact-card:hover { background: rgba(36,129,204,0.08); }
-        .contact-card .contact-copy { margin-inline-start: auto; color: var(--text-muted); flex-shrink: 0; }
+        .contact-card {
+            background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.2s;
+        }
+        .contact-card:hover { background: rgba(16,185,129,0.05); }
 
-        /* واجهة الإعدادات المستقلة */
-        .settings-view { display: none; padding: 16px; flex-direction: column; gap: 16px; }
+        /* واجهة الإعدادات */
+        .settings-view { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+
+        /* واجهة الملف الشخصي الجديدة */
+        .profile-view { display: none; padding: 24px 20px; flex-direction: column; gap: 20px; align-items: center; }
+        .profile-avatar-container {
+            width: 110px; height: 110px; border-radius: 50%; background: var(--card-bg);
+            border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 56px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .profile-info-box {
+            width: 100%; background: var(--card-bg); border-radius: 16px;
+            border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 16px;
+        }
+        .profile-row-info { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        .profile-row-info:last-child { border-bottom: none; padding-bottom: 0; }
+        .profile-row-info span:first-child { color: var(--text-muted); font-size: 14px; }
+        .profile-row-info span:last-child { font-weight: 700; color: var(--text-main); }
 
         .modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             width: 95%; max-width: 480px; background: var(--card-bg); border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease;
-            max-height: 90vh; overflow-y: auto;
         }
         .modal.open { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
         .app-footer { text-align: center; font-size: 13px; color: var(--text-muted); padding: 10px 0; margin-top: auto; }
-        .empty-placeholder { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+        .empty-placeholder { padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px; }
 
         .upload-progress-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; font-size: 13px; }
         .upload-progress-bar-bg { width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 6px; }
@@ -228,10 +285,19 @@
 <div id="splashScreen">
     <span class="material-icons splash-logo">science</span>
     <div class="splash-title">Programme Chimie</div>
-    <div style="font-size:14px; color:#2481CC; margin-top:8px; font-weight:600;">Telegram Layout Loading...</div>
+    <div style="font-size:14px; color:var(--primary); margin-top:8px; font-weight:600;">Espace Universitaire Moderne...</div>
 </div>
 
 <div class="container">
+    
+    <!-- لغة قبل تسجيل الدخول -->
+    <div id="preAuthLang" class="pre-auth-lang">
+        <select id="preLangSelect" onchange="toggleLanguagePreAuth()" style="padding:6px; border-radius:8px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color);">
+            <option value="fr" selected>Français</option>
+            <option value="ar">العربية</option>
+        </select>
+    </div>
+
     <!-- شاشة تسجيل الدخول -->
     <div id="authContainer" class="auth-box">
         <div style="text-align: center; margin-bottom: 10px;">
@@ -253,52 +319,89 @@
 
     <!-- الواجهة الرئيسية للتطبيق (بعد تسجيل الدخول) -->
     <div id="appContainer" style="display: none; flex-direction: column;">
-        <!-- شريط تليجرام العلوي -->
-        <div class="tg-header">
-            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="openUploadModal()">add_circle_outline</span>
-            <h2 id="tgMainTitle">Telegram Chimie</h2>
-            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="logoutUser()">logout</span>
+        <!-- شريط علوي أنيق -->
+        <div class="app-header">
+            <span id="btnBackToFolders" class="material-icons" style="cursor: pointer; font-size: 26px; display: none;" onclick="goBackToFolders()">arrow_back</span>
+            <h2 id="appMainTitle">Programme Chimie</h2>
+            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="openAboutInfo()">info</span>
         </div>
 
-        <!-- واجهة المحادثات (المواد والملفات) -->
+        <!-- زر الإضافة العصري والمبتكر (+) كعنصر عائم -->
+        <div class="fab-add" onclick="openUploadModal()" id="fabAddBtn">
+            <span class="material-icons" style="font-size: 32px;">add</span>
+        </div>
+
+        <!-- واجهة المواد (تتضمن المجلدات أولاً، ثم القنوات الخاصة بكل مادة) -->
         <div id="view-chats">
-            <div class="search-box">
-                <div class="search-inner">
-                    <span class="material-icons search-icon">search</span>
-                    <input type="text" id="appSearch" oninput="triggerSearch()" placeholder="Rechercher un cours...">
+            <!-- البحث والمصنفات (تظهر عندما لا نكون داخل قناة معينة) -->
+            <div id="chatsHeaderArea">
+                <div class="search-box">
+                    <div class="search-inner">
+                        <span class="material-icons search-icon">search</span>
+                        <input type="text" id="appSearch" oninput="triggerSearch()" placeholder="Rechercher un cours...">
+                    </div>
+                </div>
+
+                <div class="filter-container">
+                    <div class="filter-chip active" id="filter-all" onclick="setFilter('all')">Tout voir</div>
+                    <div class="filter-chip" id="filter-cours" onclick="setFilter('Cours')">Cours</div>
+                    <div class="filter-chip" id="filter-td" onclick="setFilter('TD')">TD</div>
+                    <div class="filter-chip" id="filter-tp" onclick="setFilter('TP')">TP</div>
+                    <div class="filter-chip" id="filter-examen" onclick="setFilter('Examen')">Archives</div>
                 </div>
             </div>
 
-            <div class="filter-container">
-                <div class="filter-chip active" id="filter-all" onclick="setFilter('all')">Tout voir</div>
-                <div class="filter-chip" id="filter-cours" onclick="setFilter('Cours')">Cours</div>
-                <div class="filter-chip" id="filter-td" onclick="setFilter('TD')">TD</div>
-                <div class="filter-chip" id="filter-tp" onclick="setFilter('TP')">TP</div>
-                <div class="filter-chip" id="filter-examen" onclick="setFilter('Examen')">Archives</div>
+            <!-- عرض المجلدات الأساسية (L2, L3) -->
+            <div id="foldersArea" class="folders-container">
+                <div class="folder-card" onclick="selectYearFolder('L2')">
+                    <div class="icon-circle"><span class="material-icons">folder</span></div>
+                    <div style="flex:1;">
+                        <div style="font-weight: 800; font-size: 18px;" id="folderL2Title">Deuxième Année (L2)</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">17 Matières • Semestres S3 & S4</div>
+                    </div>
+                    <span class="material-icons" style="color: var(--text-muted);">chevron_right</span>
+                </div>
+                <div class="folder-card" onclick="selectYearFolder('L3')">
+                    <div class="icon-circle"><span class="material-icons">folder</span></div>
+                    <div style="flex:1;">
+                        <div style="font-weight: 800; font-size: 18px;" id="folderL3Title">Troisième Année (L3)</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">10 Matières • Semestres S5 & S6</div>
+                    </div>
+                    <span class="material-icons" style="color: var(--text-muted);">chevron_right</span>
+                </div>
             </div>
 
-            <!-- قائمة المحادثات (القنوات) الديناميكية -->
-            <div class="tg-chat-list" id="tgChatListContainer"></div>
+            <!-- قائمة المحادثات/المواد التابعة للسنة المختارة -->
+            <div class="tg-chat-list" id="tgChatListContainer" style="display: none;"></div>
+
+            <!-- واجهة القناة الخاصة بمادة معينة -->
+            <div id="channelArea" class="channel-container">
+                <div class="channel-banner">
+                    <h3 id="channelMatTitle" class="channel-title">Module Title</h3>
+                    <div id="channelMatSub" class="channel-subtitle">Chimie Universitaire</div>
+                </div>
+                <div id="channelFeedContainer" class="channel-feed"></div>
+            </div>
         </div>
 
-        <!-- واجهة معلومات الاتصال بنا المحدثة بدلاً من جهات الاتصال القديمة -->
+        <!-- واجهة معلومات الاتصال بنا -->
         <div id="view-contact" class="contact-view">
-            <h2 style="margin-bottom: 10px; font-weight: 800; text-align: center;">Contactez-nous / اتصل بنا</h2>
+            <h2 style="margin-bottom: 10px; font-weight: 800; text-align: center;" id="txtContactHeading">Contactez-nous / اتصل بنا</h2>
             <div class="contact-card" onclick="window.open('https://wa.me/22233039964','_blank')">
                 <span class="material-icons" style="color: #25D366; font-size: 32px;">chat</span>
-                <div>
+                <div style="flex:1;">
                     <div style="font-weight: 700; font-size: 16px;">WhatsApp</div>
-                    <div style="color: var(--text-muted); font-size: 14px; user-select: all;">+222 33 03 99 64</div>
+                    <div style="color: var(--text-muted); font-size: 14px;">+222 33 03 99 64</div>
                 </div>
-                <span class="material-icons contact-copy" onclick="event.stopPropagation(); copyToClipboard('+22233039964')">content_copy</span>
+                <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
             </div>
             <div class="contact-card" onclick="window.open('mailto:medlemin4303@gmail.com')">
-                <span class="material-icons" style="color: #2481CC; font-size: 32px;">email</span>
-                <div>
+                <span class="material-icons" style="color: var(--primary); font-size: 32px;">email</span>
+                <div style="flex:1;">
                     <div style="font-weight: 700; font-size: 16px;">Email</div>
-                    <div style="color: var(--text-muted); font-size: 14px; user-select: all;">medlemin4303@gmail.com</div>
+                    <div style="color: var(--text-muted); font-size: 14px;">medlemin4303@gmail.com</div>
                 </div>
-                <span class="material-icons contact-copy" onclick="event.stopPropagation(); copyToClipboard('medlemin4303@gmail.com')">content_copy</span>
+                <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
             </div>
         </div>
 
@@ -311,29 +414,63 @@
                     <input type="checkbox" id="darkToggle" checked onchange="toggleThemeMode()">
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Langue / اللغة</span>
+                    <span id="optLanguage">Langue / اللغة</span>
                     <select id="langSelect" onchange="toggleLanguage()" style="padding:6px; border-radius:8px; background:var(--bg-color); color:var(--text-main); border:1px solid var(--border-color);">
                         <option value="fr" selected>Français</option>
                         <option value="ar">العربية</option>
                     </select>
                 </div>
-                <button class="btn-outline" id="btnDeleteAccount" style="border-color: var(--danger); color: var(--danger);" onclick="deleteUserAccount()">Supprimer le compte</button>
             </div>
         </div>
 
-        <!-- شريط التنقل السفلي على طراز تليجرام -->
-        <div class="tg-bottom-nav">
-            <div class="tg-nav-item active" id="nav-chats" onclick="switchView('chats')">
-                <span class="material-icons">forum</span>
-                <span id="navLblChats">Messages</span>
+        <!-- واجهة الملف الشخصي الحديثة بالكامل -->
+        <div id="view-profile" class="profile-view">
+            <div class="profile-avatar-container">
+                <span class="material-icons">person</span>
             </div>
-            <div class="tg-nav-item" id="nav-contact" onclick="switchView('contact')">
+            <h2 id="txtProfileWelcome" style="margin: 0; font-weight: 800;">Mon Profil</h2>
+            
+            <div class="profile-info-box">
+                <div class="profile-row-info">
+                    <span id="lblProfName">Nom</span>
+                    <span id="valProfName">-</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfEmail">Email</span>
+                    <span id="valProfEmail">-</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfBirth">Date de Naissance</span>
+                    <span id="valProfBirth">15/09/2004</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfJoined">Rejoint le</span>
+                    <span id="valProfJoined">-</span>
+                </div>
+            </div>
+
+            <!-- تم نقل إجراءات الخروج والحذف هنا بالكامل تماشياً مع طلبك -->
+            <button class="btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary); margin-top: 10px;" onclick="logoutUser()" id="btnLogout">Déconnexion</button>
+            <button class="btn-outline" id="btnDeleteAccount" style="width: 100%; border-color: var(--danger); color: var(--danger);" onclick="deleteUserAccount()">Supprimer le compte</button>
+        </div>
+
+        <!-- شريط التنقل السفلي الفخم (4 أيقونات) -->
+        <div class="app-bottom-nav">
+            <div class="nav-item active" id="nav-chats" onclick="switchView('chats')">
+                <span class="material-icons">school</span>
+                <span id="navLblChats">Matières</span>
+            </div>
+            <div class="nav-item" id="nav-contact" onclick="switchView('contact')">
                 <span class="material-icons">contact_support</span>
                 <span id="navLblContact">Contact</span>
             </div>
-            <div class="tg-nav-item" id="nav-settings" onclick="switchView('settings')">
+            <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
                 <span class="material-icons">settings</span>
                 <span id="navLblSettings">Paramètres</span>
+            </div>
+            <div class="nav-item" id="nav-profile" onclick="switchView('profile')">
+                <span class="material-icons">account_circle</span>
+                <span id="navLblProfile">Profil</span>
             </div>
         </div>
 
@@ -343,24 +480,15 @@
     </div>
 </div>
 
-<!-- مودال الرفع -->
+<!-- مودال الرفع الذكي والمبسط -->
 <div class="modal" id="uploadModal">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 style="margin:0;" id="txtUploadModalTitle">رفع ملف جديد</h3>
         <span class="material-icons" style="cursor: pointer; color: var(--danger);" onclick="closeModal('uploadModal')">close</span>
     </div>
     <div style="display: flex; flex-direction: column; gap: 10px;">
-        <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handlePremiumFileSelection()">
-        <select id="uploadYear" onchange="updateSemesters()" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;">
-            <!-- تم التخلص من خيار السنة الأولى نهائياً هنا -->
-            <option value="L2" selected>Deuxième Année (L2)</option>
-            <option value="L3">Troisième Année (L3)</option>
-        </select>
-        <select id="uploadSemester" onchange="updateModules()" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;"></select>
-        <select id="uploadModule" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;"></select>
-        <select id="uploadTag" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;">
-            <option value="Cours">Cours</option><option value="TD">TD</option><option value="TP">TP</option><option value="Examen">Examen</option>
-        </select>
+        <p style="font-size: 13px; color: var(--text-muted); margin: 0;" id="txtUploadNotice">النظام سيتعرف تلقائياً على تصنيف ومسار الملف المرفوع من خلال اسمه.</p>
+        <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFileAutoUploadDirectly()" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px; border:1px solid var(--border-color);">
 
         <div class="upload-progress-box" id="uploadProgressBox">
             <div style="display:flex; justify-content:space-between; font-weight:700;">
@@ -369,8 +497,6 @@
             </div>
             <div class="upload-progress-bar-bg"><div class="upload-progress-bar-fill" id="uploadProgressBarFill"></div></div>
         </div>
-
-        <button class="btn-prime" onclick="saveFileMetadata()" id="btnSaveUpload"><span id="txtBtnSaveUpload">رفع وتأكيد</span></button>
     </div>
 </div>
 
@@ -389,7 +515,7 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // هندسة البيانات بعد حذف السنة الأولى (L1) تماماً
+    // هيكلية المواد الأكاديمية (بدون L1)
     const chemistryArchitecture = {
         L2: {
             modulesCount: 17, semestres: ["S3", "S4"],
@@ -409,18 +535,21 @@
     let selectedFilterTag = 'all';
     let currentFetchedFiles = [];
     let currentLang = 'fr';
+    let currentSelectedYearFolder = ''; // تتبع المجلد النشط
+    let activeChannelModule = ''; // المادة النشطة المعروضة كقناة
 
     const dictionary = {
         fr: {
             authTitle: "Connexion", emailPh: "Adresse Email", passPh: "Mot de passe",
             authBtn: "Se connecter / S'inscrire", googleBtn: "Connexion avec Google", phoneBtn: "Connexion par Téléphone",
             errEmail: "Veuillez entrer une adresse email valide.", errPassword: "Le mot de passe doit contenir au moins 6 caractères.",
-            mainTitle: "Telegram Chimie", searchPh: "Rechercher un cours...",
+            mainTitle: "Programme Chimie", searchPh: "Rechercher un cours...",
             filterAll: "Tout voir", filterCours: "Cours", filterTd: "TD", filterTp: "TP", filterExamen: "Archives",
-            settingsHeading: "Paramètres", darkMode: "Mode sombre", deleteAccount: "Supprimer le compte",
-            navChats: "Messages", navContact: "Contact", navSettings: "Paramètres",
+            settingsHeading: "Paramètres", darkMode: "Mode sombre", optLanguage: "Langue / اللغة", deleteAccount: "Supprimer le compte",
+            navChats: "Matières", navContact: "Contact", navSettings: "Paramètres", navProfile: "Profil",
             uploadModalTitle: "Téléverser un fichier", btnSaveUpload: "Téléverser",
-            copiedMsg: "Copié dans le presse-papiers"
+            copiedMsg: "Copié dans le presse-papiers", folderL2Title: "Deuxième Année (L2)", folderL3Title: "Troisième Année (L3)",
+            welcomeProfile: "Mon Profil", lblName: "Nom", lblBirth: "Date de Naissance", lblJoined: "Rejoint le", logoutBtn: "Déconnexion"
         },
         ar: {
             authTitle: "تسجيل الدخول", emailPh: "البريد الإلكتروني", passPh: "كلمة المرور",
@@ -428,38 +557,31 @@
             errEmail: "يرجى إدخال بريد إلكتروني صالح.", errPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
             mainTitle: "برنامج الكيمياء", searchPh: "ابحث عن مادة...",
             filterAll: "الكل", filterCours: "دروس", filterTd: "TD", filterTp: "TP", filterExamen: "أرشيف",
-            settingsHeading: "الإعدادات", darkMode: "الوضع الداكن", deleteAccount: "حذف الحساب",
-            navChats: "الرسائل", navContact: "التواصل", navSettings: "الإعدادات",
+            settingsHeading: "الإعدادات", darkMode: "الوضع الداكن", optLanguage: "Langue / اللغة", deleteAccount: "حذف الحساب",
+            navChats: "المواد", navContact: "التواصل", navSettings: "الإعدادات", navProfile: "حسابي",
             uploadModalTitle: "رفع ملف جديد", btnSaveUpload: "رفع وتأكيد",
-            copiedMsg: "تم النسخ"
+            copiedMsg: "تم النسخ", folderL2Title: "السنة الثانية (L2)", folderL3Title: "السنة الثالثة (L3)",
+            welcomeProfile: "ملفي الشخصي", lblName: "الاسم", lblBirth: "تاريخ الميلاد", lblJoined: "تاريخ الانضمام", logoutBtn: "تسجيل الخروج"
         }
     };
 
     const authErrorMessages = {
         fr: {
-            'auth/invalid-email': "Adresse email invalide.",
-            'auth/wrong-password': "Mot de passe incorrect.",
-            'auth/invalid-credential': "Email ou mot de passe incorrect.",
-            'auth/user-disabled': "Ce compte a été désactivé.",
+            'auth/invalid-email': "Adresse email invalide.", 'auth/wrong-password': "Mot de passe incorrect.",
+            'auth/invalid-credential': "Email ou mot de passe incorrect.", 'auth/user-disabled': "Ce compte a été désactivé.",
             'auth/email-already-in-use': "Cet email est déjà utilisé par un autre compte.",
             'auth/weak-password': "Le mot de passe est trop faible (6 caractères minimum).",
             'auth/too-many-requests': "Trop de tentatives. Réessayez plus tard.",
             'auth/network-request-failed': "Erreur réseau. Vérifiez votre connexion.",
-            'auth/popup-closed-by-user': "Fenêtre de connexion fermée avant la fin.",
-            'auth/unauthorized-domain': "Ce domaine n'est pas autorisé dans Firebase Auth.",
             default: "Une erreur est survenue. Veuillez réessayer."
         },
         ar: {
-            'auth/invalid-email': "البريد الإلكتروني غير صالح.",
-            'auth/wrong-password': "كلمة المرور غير صحيحة.",
-            'auth/invalid-credential': "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-            'auth/user-disabled': "تم تعطيل هذا الحساب.",
+            'auth/invalid-email': "البريد الإلكتروني غير صالح.", 'auth/wrong-password': "كلمة المرور غير صحيحة.",
+            'auth/invalid-credential': "البريد الإلكتروني أو كلمة المرور غير صحيحة.", 'auth/user-disabled': "تم تعطيل هذا الحساب.",
             'auth/email-already-in-use': "هذا البريد الإلكتروني مستخدم من طرف حساب آخر.",
             'auth/weak-password': "كلمة المرور ضعيفة جداً (6 أحرف على الأقل).",
             'auth/too-many-requests': "محاولات كثيرة جداً. حاول لاحقاً.",
             'auth/network-request-failed': "خطأ في الشبكة، تحقق من اتصالك بالإنترنت.",
-            'auth/popup-closed-by-user': "تم إغلاق نافذة تسجيل الدخول قبل الانتهاء.",
-            'auth/unauthorized-domain': "هذا النطاق غير مصرح له في إعدادات Firebase.",
             default: "حدث خطأ ما، حاول مرة أخرى."
         }
     };
@@ -469,111 +591,110 @@
             const splash = document.getElementById('splashScreen');
             if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
         }, 1000);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW registration failed:', err));
-        }
     });
 
     auth.onAuthStateChanged(user => {
         if(user) {
             document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('preAuthLang').style.display = 'none';
             document.getElementById('appContainer').style.display = 'flex';
+            syncUserProfileInfo(user);
             fetchUserFilesRealtime(user.uid);
         } else {
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('preAuthLang').style.display = 'flex';
         }
     });
 
     function switchView(viewName) {
         document.getElementById('view-chats').style.display = viewName === 'chats' ? 'block' : 'none';
         document.getElementById('view-contact').style.display = viewName === 'contact' ? 'flex' : 'none';
-        document.getElementById('view-settings').style.display = viewName === 'settings' ? 'flex' : 'none';
+        document.getElementById('view-settings').style.display = viewName === 'settings' ? 'block' : 'none';
+        document.getElementById('view-profile').style.display = viewName === 'profile' ? 'flex' : 'none';
         
-        document.querySelectorAll('.tg-nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`nav-${viewName}`).classList.add('active');
+
+        // الحفاظ على زر الإضافة الطافي ظاهراً في شاشتي المواد والتواصل لإعطاء طابع عصري
+        document.getElementById('fabAddBtn').style.display = (viewName === 'chats' || viewName === 'contact') ? 'flex' : 'none';
+    }
+
+    function selectYearFolder(year) {
+        currentSelectedYearFolder = year;
+        document.getElementById('foldersArea').style.display = 'none';
+        document.getElementById('tgChatListContainer').style.display = 'flex';
+        document.getElementById('btnBackToFolders').style.display = 'block';
+        renderTelegramLayout();
+    }
+
+    function goBackToFolders() {
+        if (activeChannelModule !== '') {
+            // العودة من القناة المفتوحة إلى قائمة المواد
+            activeChannelModule = '';
+            document.getElementById('channelArea').style.display = 'none';
+            document.getElementById('tgChatListContainer').style.display = 'flex';
+            document.getElementById('chatsHeaderArea').style.display = 'block';
+        } else {
+            // العودة من قائمة المواد إلى مجلدات السنوات
+            currentSelectedYearFolder = '';
+            document.getElementById('tgChatListContainer').style.display = 'none';
+            document.getElementById('foldersArea').style.display = 'flex';
+            document.getElementById('btnBackToFolders').style.display = 'none';
+        }
     }
 
     function fetchUserFilesRealtime(uid) {
-        db.collection("files").where("userId", "==", uid).onSnapshot(snapshot => {
+        // جلب جميع ملفات المادة المتاحة لجميع المستخدمين بالتطبيق
+        db.collection("files").onSnapshot(snapshot => {
             currentFetchedFiles = [];
             snapshot.forEach(doc => { currentFetchedFiles.push(Object.assign({ id: doc.id }, doc.data())); });
-            renderTelegramLayout();
-        }, err => console.warn('fetchUserFilesRealtime error:', err));
+            if (activeChannelModule !== '') {
+                openMaterialChannel(activeChannelModule);
+            } else {
+                renderTelegramLayout();
+            }
+        }, err => console.warn('Realtime fetch error:', err));
     }
 
-    // بناء الواجهة المطابقة تماماً لتليجرام بناءً على ملفاتك وموادك
-    // ملاحظة: تم استبدال onclick المضمّن بمعرّفات بيانات آمنة (data-*) لتفادي انكسار الكود
-    // عند وجود فاصلة عليا (') في اسم مادة أو اسم ملف، مثل "l'étudiant".
+    // بناء واجهة قائمة المواد تماثلاً مع المفهوم الهجين الفاخر
     function renderTelegramLayout() {
         const container = document.getElementById('tgChatListContainer');
+        if (!currentSelectedYearFolder) return;
+
         const searchQuery = document.getElementById('appSearch').value.toLowerCase();
         container.innerHTML = '';
 
         let totalRendered = 0;
-        let chatKeyCounter = 0;
+        const currentYearData = chemistryArchitecture[currentSelectedYearFolder];
 
-        Object.keys(chemistryArchitecture).forEach(yearKey => {
-            chemistryArchitecture[yearKey].matières.forEach(matName => {
-                const filesForThisModule = currentFetchedFiles.filter(f => {
-                    return f.year === yearKey && f.mod === matName && 
-                           (selectedFilterTag === 'all' || f.tag === selectedFilterTag) &&
-                           (f.name.toLowerCase().includes(searchQuery) || matName.toLowerCase().includes(searchQuery));
-                });
-
-                if(searchQuery !== '' && filesForThisModule.length === 0) return;
-                totalRendered++;
-                chatKeyCounter++;
-
-                const initialLetter = matName.charAt(0).toUpperCase();
-                const filesCount = filesForThisModule.length;
-                const chatKey = `chat-${chatKeyCounter}`;
-
-                const chatItem = document.createElement('div');
-                const chatRow = document.createElement('div');
-                chatRow.className = 'tg-chat-item';
-                chatRow.innerHTML = `
-                    <div class="tg-avatar">${initialLetter}</div>
-                    <div class="tg-chat-info">
-                        <div class="tg-chat-top">
-                            <div class="tg-chat-name"></div>
-                            <div class="tg-chat-meta">${yearKey}</div>
-                        </div>
-                        <div class="tg-chat-msg">${filesCount} Document(s) disponible(s)</div>
-                    </div>
-                `;
-                chatRow.querySelector('.tg-chat-name').textContent = matName;
-                chatRow.addEventListener('click', () => toggleFileBox(chatKey));
-
-                const fileBox = document.createElement('div');
-                fileBox.className = 'tg-file-box';
-                fileBox.id = `box-${chatKey}`;
-
-                if(filesCount > 0) {
-                    filesForThisModule.forEach(file => {
-                        const row = document.createElement('div');
-                        row.className = 'file-row';
-                        const openSpan = document.createElement('span');
-                        openSpan.className = 'file-open';
-                        openSpan.textContent = '📄 ' + file.name;
-                        openSpan.addEventListener('click', () => openFileById(file.id));
-                        const delIcon = document.createElement('span');
-                        delIcon.className = 'material-icons';
-                        delIcon.style.cssText = 'color:var(--danger); cursor:pointer; font-size:20px;';
-                        delIcon.textContent = 'delete';
-                        delIcon.addEventListener('click', () => deleteFileById(file.id));
-                        row.appendChild(openSpan);
-                        row.appendChild(delIcon);
-                        fileBox.appendChild(row);
-                    });
-                } else {
-                    fileBox.innerHTML = `<div class="empty-placeholder">Aucun document dans cette catégorie</div>`;
-                }
-
-                chatItem.appendChild(chatRow);
-                chatItem.appendChild(fileBox);
-                container.appendChild(chatItem);
+        currentYearData.matières.forEach(matName => {
+            const filesForThisModule = currentFetchedFiles.filter(f => {
+                return f.year === currentSelectedYearFolder && f.mod === matName && 
+                       (selectedFilterTag === 'all' || f.tag === selectedFilterTag) &&
+                       (f.name.toLowerCase().includes(searchQuery) || matName.toLowerCase().includes(searchQuery));
             });
+
+            if(searchQuery !== '' && filesForThisModule.length === 0) return;
+            totalRendered++;
+
+            const initialLetter = matName.charAt(0).toUpperCase();
+            const filesCount = filesForThisModule.length;
+
+            const chatRow = document.createElement('div');
+            chatRow.className = 'tg-chat-item';
+            chatRow.innerHTML = `
+                <div class="tg-avatar" style="background-color: var(--primary);">${initialLetter}</div>
+                <div class="tg-chat-info">
+                    <div class="tg-chat-top">
+                        <div class="tg-chat-name">${matName}</div>
+                        <div class="tg-chat-meta">${currentSelectedYearFolder}</div>
+                    </div>
+                    <div class="tg-chat-msg">${filesCount} Document(s) disponible(s)</div>
+                </div>
+            `;
+            chatRow.addEventListener('click', () => openMaterialChannel(matName));
+            container.appendChild(chatRow);
         });
 
         if(totalRendered === 0) {
@@ -581,15 +702,69 @@
         }
     }
 
-    function toggleFileBox(key) {
-        const box = document.getElementById(`box-${key}`);
-        if (!box) return;
-        box.style.display = box.style.display === 'block' ? 'none' : 'block';
-    }
+    // فتح صفحة المادة بشكل قناة مستقلة وراقية
+    function openMaterialChannel(matName) {
+        activeChannelModule = matName;
+        document.getElementById('tgChatListContainer').style.display = 'none';
+        document.getElementById('chatsHeaderArea').style.display = 'none';
+        document.getElementById('btnBackToFolders').style.display = 'block';
 
-    function openFileById(id) {
-        const file = currentFetchedFiles.find(f => f.id === id);
-        if (file && file.url) window.open(file.url, '_blank');
+        const channelArea = document.getElementById('channelArea');
+        channelArea.style.display = 'flex';
+
+        document.getElementById('channelMatTitle').textContent = matName;
+        document.getElementById('channelMatSub').textContent = `Filière Chimie • ${currentSelectedYearFolder}`;
+
+        const feedContainer = document.getElementById('channelFeedContainer');
+        feedContainer.innerHTML = '';
+
+        const filesForThisModule = currentFetchedFiles.filter(f => f.year === currentSelectedYearFolder && f.mod === matName);
+
+        if (filesForThisModule.length === 0) {
+            feedContainer.innerHTML = `<div class="empty-placeholder">Aucun fichier ou message partagé dans ce module.</div>`;
+            return;
+        }
+
+        filesForThisModule.forEach(file => {
+            const feedCard = document.createElement('div');
+            feedCard.className = 'feed-card';
+            
+            const fileDate = file.createdAt ? file.createdAt.toDate().toLocaleDateString('fr-FR') : '-';
+            
+            feedCard.innerHTML = `
+                <div class="feed-header">
+                    <span class="material-icons" style="font-size: 16px;">schedule</span>
+                    <span>${fileDate}</span>
+                    <span style="margin-left: auto; color: var(--primary); font-weight:700;">#${file.tag}</span>
+                </div>
+                <div style="font-weight: 700; font-size: 16px; margin-top: 4px;">📄 ${file.name}</div>
+                <div class="feed-actions">
+                    <button class="feed-btn open-f"><span class="material-icons" style="font-size: 18px;">visibility</span> Visualiser</button>
+                    <button class="feed-btn download-f"><span class="material-icons" style="font-size: 18px;">download</span> Télécharger</button>
+                </div>
+            `;
+
+            feedCard.querySelector('.open-f').addEventListener('click', () => window.open(file.url, '_blank'));
+            feedCard.querySelector('.download-f').addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = file.url;
+                link.download = file.name;
+                link.target = '_blank';
+                link.click();
+            });
+
+            // خيار الحذف لمالك الملف
+            if (file.userId === auth.currentUser.uid) {
+                const actionsArea = feedCard.querySelector('.feed-actions');
+                const delBtn = document.createElement('button');
+                delBtn.className = 'feed-btn delete-btn';
+                delBtn.innerHTML = `<span class="material-icons" style="font-size: 18px;">delete</span> Supprimer`;
+                delBtn.addEventListener('click', () => deleteFileById(file.id));
+                actionsArea.insertBefore(delBtn, actionsArea.firstChild);
+            }
+
+            feedContainer.appendChild(feedCard);
+        });
     }
 
     function setFilter(tag) {
@@ -600,69 +775,83 @@
     }
 
     function triggerSearch() { renderTelegramLayout(); }
+    
     function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('open');
-        if (id === 'uploadModal') resetUploadModalUI();
-    }
-    function openUploadModal() { openModal('uploadModal'); updateSemesters(); }
-
-    function updateSemesters() {
-        const year = document.getElementById('uploadYear').value;
-        const semSelect = document.getElementById('uploadSemester');
-        semSelect.innerHTML = '';
-        chemistryArchitecture[year].semestres.forEach(s => {
-            const opt = document.createElement('option'); opt.value = s; opt.textContent = s; semSelect.appendChild(opt);
-        });
-        updateModules();
-    }
-
-    function updateModules() {
-        const year = document.getElementById('uploadYear').value;
-        const sem = document.getElementById('uploadSemester').value;
-        const modSelect = document.getElementById('uploadModule');
-        modSelect.innerHTML = '';
-        const list = (chemistryArchitecture[year] && chemistryArchitecture[year][sem]) || [];
-        list.forEach(m => { const opt = document.createElement('option'); opt.value = m; opt.textContent = m; modSelect.appendChild(opt); });
-    }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); resetUploadModalUI(); }
+    function openUploadModal() { openModal('uploadModal'); }
 
     function resetUploadModalUI() {
         document.getElementById('fileInput').value = '';
         document.getElementById('uploadProgressBox').style.display = 'none';
         document.getElementById('uploadProgressBarFill').style.width = '0%';
-        document.getElementById('btnSaveUpload').disabled = false;
     }
 
-    function handlePremiumFileSelection() { /* اختياري: يمكن إضافة معاينة لاحقاً */ }
-
-    function saveFileMetadata() {
+    // التعرف التلقائي الذكي على تفاصيل الملف عبر اسمه
+    function handleFileAutoUploadDirectly() {
         const fileInput = document.getElementById('fileInput');
-        if(fileInput.files.length === 0) {
-            alert(currentLang === 'ar' ? 'يرجى اختيار ملف PDF أولاً.' : "Veuillez d'abord sélectionner un fichier PDF.");
-            return;
-        }
+        if(fileInput.files.length === 0) return;
         const file = fileInput.files[0];
+
         const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
         if (!isPdf) {
-            alert(currentLang === 'ar' ? 'يُسمح فقط بملفات PDF.' : "Seuls les fichiers PDF sont autorisés.");
+            alert(currentLang === 'ar' ? 'يُسمح فقط برفع ملفات PDF.' : "Seuls les fichiers PDF sont autorisés.");
+            fileInput.value = '';
             return;
         }
+
         if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
             alert((currentLang === 'ar' ? `حجم الملف يتجاوز ${MAX_FILE_SIZE_MB} ميغابايت.` : `Le fichier dépasse ${MAX_FILE_SIZE_MB} Mo.`));
+            fileInput.value = '';
             return;
         }
 
-        const uid = auth.currentUser.uid;
-        const year = document.getElementById('uploadYear').value;
-        const sem = document.getElementById('uploadSemester').value;
-        const mod = document.getElementById('uploadModule').value;
-        const tag = document.getElementById('uploadTag').value;
+        // ذكاء اصطناعي محلي لقراءة اسم الملف وتحديد المسار والنوع
+        const nameLower = file.name.toLowerCase();
+        let detectedYear = "L2"; // افتراضي
+        let detectedSem = "S3";
+        let detectedModule = "Chimie des solutions";
+        let detectedTag = "Cours";
 
-        const btn = document.getElementById('btnSaveUpload');
-        btn.disabled = true;
+        // 1. تحديد السنة
+        if (nameLower.includes('l3') || nameLower.includes('s5') || nameLower.includes('s6')) {
+            detectedYear = "L3";
+            detectedSem = "S5";
+            detectedModule = "Anglais 3";
+        }
+
+        // 2. تحديد الفصل الدراسي
+        if (nameLower.includes('s3')) detectedSem = 'S3';
+        else if (nameLower.includes('s4')) detectedSem = 'S4';
+        else if (nameLower.includes('s5')) detectedSem = 'S5';
+        else if (nameLower.includes('s6')) detectedSem = 'S6';
+
+        // 3. تحديد المادة
+        const yearMatières = chemistryArchitecture[detectedYear].matières;
+        for (let mat of yearMatières) {
+            let keywords = mat.toLowerCase().split(' ');
+            for (let word of keywords) {
+                if (word.length > 3 && nameLower.includes(word)) {
+                    detectedModule = mat;
+                    break;
+                }
+            }
+        }
+
+        // 4. تحديد النوع
+        if (nameLower.includes('td')) detectedTag = 'TD';
+        else if (nameLower.includes('tp')) detectedTag = 'TP';
+        else if (nameLower.includes('exam') || nameLower.includes('archiv')) detectedTag = 'Examen';
+
+        // بدء عملية الرفع الفورية
+        uploadFileToFirebase(file, detectedYear, detectedSem, detectedModule, detectedTag);
+    }
+
+    function uploadFileToFirebase(file, year, sem, mod, tag) {
+        const uid = auth.currentUser.uid;
         const progressBox = document.getElementById('uploadProgressBox');
         const progressFill = document.getElementById('uploadProgressBarFill');
         const progressPercent = document.getElementById('txtUploadProgressPercent');
+
         progressBox.style.display = 'block';
         progressFill.style.width = '0%';
         progressPercent.textContent = '0%';
@@ -676,7 +865,6 @@
             progressFill.style.width = pct + '%';
             progressPercent.textContent = pct + '%';
         }, error => {
-            btn.disabled = false;
             progressBox.style.display = 'none';
             alert((currentLang === 'ar' ? 'فشل رفع الملف: ' : "Échec de l'envoi : ") + error.message);
         }, () => {
@@ -687,8 +875,8 @@
                 });
             }).then(() => {
                 closeModal('uploadModal');
+                alert(currentLang === 'ar' ? 'تم رفع وحفظ الملف وتصنيفه بنجاح!' : "Fichier téléversé et classé avec succès !");
             }).catch(err => {
-                btn.disabled = false;
                 progressBox.style.display = 'none';
                 alert((currentLang === 'ar' ? 'فشل حفظ بيانات الملف: ' : "Échec de l'enregistrement : ") + err.message);
             });
@@ -699,6 +887,7 @@
         const file = currentFetchedFiles.find(f => f.id === id);
         const msg = currentLang === 'ar' ? 'حذف هذا الملف نهائياً؟' : "Supprimer ce fichier définitivement ?";
         if(!confirm(msg)) return;
+        
         const deleteDoc = () => db.collection("files").doc(id).delete();
         if (file && file.storagePath) {
             storage.ref(file.storagePath).delete().then(deleteDoc).catch(err => {
@@ -710,20 +899,17 @@
         }
     }
 
-    function copyToClipboard(text) {
-        const done = () => alert(dictionary[currentLang].copiedMsg);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopyToClipboard(text, done));
-        } else {
-            fallbackCopyToClipboard(text, done);
-        }
-    }
-    function fallbackCopyToClipboard(text, done) {
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.focus(); ta.select();
-        try { document.execCommand('copy'); done(); } catch(e) {}
-        document.body.removeChild(ta);
+    function syncUserProfileInfo(user) {
+        document.getElementById('valProfEmail').textContent = user.email || "Compte Externe";
+        document.getElementById('valProfName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "Etudiant");
+        
+        db.collection("users").doc(user.uid).get().then(doc => {
+            if(doc.exists && doc.data().createdAt) {
+                document.getElementById('valProfJoined').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
+            } else {
+                document.getElementById('valProfJoined').textContent = new Date().toLocaleDateString('fr-FR');
+            }
+        });
     }
 
     function handleAuth() {
@@ -735,7 +921,6 @@
         errEmailEl.style.display = 'none';
         errPassEl.style.display = 'none';
         errGeneralEl.style.display = 'none';
-        errGeneralEl.textContent = '';
 
         let hasError = false;
         if(!email.includes('@') || !email.includes('.')) { errEmailEl.style.display = 'block'; hasError = true; }
@@ -749,7 +934,10 @@
             btn.disabled = false;
         }).catch(err => {
             if(err.code === 'auth/user-not-found') {
-                auth.createUserWithEmailAndPassword(email, password).then(() => {
+                auth.createUserWithEmailAndPassword(email, password).then(cred => {
+                    db.collection("users").doc(cred.user.uid).set({
+                        email: email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                     btn.disabled = false;
                 }).catch(createErr => {
                     btn.disabled = false;
@@ -792,6 +980,7 @@
 
     function logoutUser() { auth.signOut(); }
     function toggleThemeMode() { document.documentElement.setAttribute('data-theme', document.getElementById('darkToggle').checked ? 'dark' : 'light'); }
+    
     function deleteUserAccount() {
         const msg = currentLang === 'ar' ? "حذف الحساب نهائياً؟" : "Supprimer le compte définitivement ?";
         if(confirm(msg)) {
@@ -802,8 +991,15 @@
         }
     }
 
+    function toggleLanguagePreAuth() {
+        const val = document.getElementById('preLangSelect').value;
+        document.getElementById('langSelect').value = val;
+        toggleLanguage();
+    }
+
     function toggleLanguage() {
         currentLang = document.getElementById('langSelect').value;
+        document.getElementById('preLangSelect').value = currentLang;
         const dict = dictionary[currentLang];
         const isAr = currentLang === 'ar';
 
@@ -822,7 +1018,7 @@
         const phoneBtn = document.getElementById('btnPhoneLogin');
         phoneBtn.childNodes[phoneBtn.childNodes.length - 1].textContent = ' ' + dict.phoneBtn;
 
-        document.getElementById('tgMainTitle').textContent = dict.mainTitle;
+        document.getElementById('appMainTitle').textContent = dict.mainTitle;
         document.getElementById('appSearch').placeholder = dict.searchPh;
 
         document.getElementById('filter-all').textContent = dict.filterAll;
@@ -833,16 +1029,33 @@
 
         document.getElementById('txtSettingsHeading').textContent = dict.settingsHeading;
         document.getElementById('optDarkMode').textContent = dict.darkMode;
-        document.getElementById('btnDeleteAccount').textContent = dict.deleteAccount;
+        document.getElementById('optLanguage').textContent = dict.optLanguage;
 
         document.getElementById('navLblChats').textContent = dict.navChats;
         document.getElementById('navLblContact').textContent = dict.navContact;
         document.getElementById('navLblSettings').textContent = dict.navSettings;
+        document.getElementById('navLblProfile').textContent = dict.navProfile;
 
         document.getElementById('txtUploadModalTitle').textContent = dict.uploadModalTitle;
-        document.getElementById('txtBtnSaveUpload').textContent = dict.btnSaveUpload;
+        document.getElementById('folderL2Title').textContent = dict.folderL2Title;
+        document.getElementById('folderL3Title').textContent = dict.folderL3Title;
 
-        renderTelegramLayout();
+        document.getElementById('txtProfileWelcome').textContent = dict.welcomeProfile;
+        document.getElementById('lblProfName').textContent = dict.lblName;
+        document.getElementById('lblProfBirth').textContent = dict.lblBirth;
+        document.getElementById('lblProfJoined').textContent = dict.lblJoined;
+        document.getElementById('btnLogout').textContent = dict.logoutBtn;
+        document.getElementById('btnDeleteAccount').textContent = dict.deleteAccount;
+
+        if (activeChannelModule !== '') {
+            openMaterialChannel(activeChannelModule);
+        } else {
+            renderTelegramLayout();
+        }
+    }
+
+    function openAboutInfo() {
+        alert(currentLang === 'ar' ? 'برنامج الكيمياء - منصة دراسية متقدمة' : "Programme Chimie - Plateforme d'étude avancée");
     }
 </script>
 </body>
