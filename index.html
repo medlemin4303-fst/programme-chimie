@@ -3,45 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programme Chimie - Premium UI/UX</title>
+    <title>Programme Chimie - Telegram Edition</title>
     
+    <!-- Police unique : Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
+    <!-- SDK Firebase v8 المستقر -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
+    <!-- PWA: Manifest + Theme Color -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#121212">
+    <meta name="theme-color" content="#17212B">
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1E1E1E;
-            --primary: #4CAF50;
-            --primary-dark: #2E7D32;
-            --text-main: #FFFFFF;
-            --text-muted: #B0B0B0;
+            --bg-color: #0E1621;
+            --card-bg: #17212B;
+            --primary: #2481CC;
+            --primary-dark: #1A65A4;
+            --text-main: #F5F6F7;
+            --text-muted: #7F8C9A;
             --danger: #EF5350;
-            --border-color: #2C2C2C;
+            --border-color: #101924;
             --font-app: 'Cairo', sans-serif;
         }
 
         [data-theme="light"] {
-            --bg-color: #F8F9FA;
+            --bg-color: #FFFFFF;
             --card-bg: #FFFFFF;
-            --primary: #2E7D32;
-            --primary-dark: #1B5E20;
-            --text-main: #212121;
-            --text-muted: #757575;
+            --primary: #527DA3;
+            --primary-dark: #416789;
+            --text-main: #000000;
+            --text-muted: #707579;
             --danger: #D32F2F;
-            --border-color: #E0E0E0;
+            --border-color: #F1F1F1;
         }
 
         * {
@@ -57,13 +60,13 @@
             color: var(--text-main);
             transition: background-color 0.25s ease, color 0.25s ease;
             overflow-x: hidden;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         #splashScreen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #121212;
+            background-color: #0E1621;
             z-index: 99999;
             display: flex;
             flex-direction: column;
@@ -73,7 +76,7 @@
         }
         .splash-logo {
             font-size: 64px;
-            color: #4CAF50;
+            color: #2481CC;
             animation: pulseLogo 1.5s infinite ease-in-out;
         }
         @keyframes pulseLogo {
@@ -92,34 +95,30 @@
             max-width: 600px;
             margin: 0 auto;
             min-height: 100vh;
-            background: var(--card-bg);
-            padding: 16px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+            background: var(--bg-color);
             position: relative;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            padding-bottom: 70px;
         }
 
-        h1 { font-size: 32px; font-weight: 800; margin: 0; color: var(--text-main); }
-        h2 { font-size: 22px; font-weight: 700; margin: 0; color: var(--text-main); }
-
-        .ripple {
-            position: relative;
-            overflow: hidden;
+        /* شريط تليجرام العلوي */
+        .tg-header {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
         }
-        .ripple::after {
-            content: ""; display: block; position: absolute;
-            width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;
-            background-image: radial-gradient(circle, var(--text-main) 10%, transparent 10.01%);
-            background-repeat: no-repeat; background-position: 50%;
-            transform: scale(10); opacity: 0; transition: transform 0.4s, opacity 0.6s;
-        }
-        .ripple:active::after { transform: scale(0); opacity: 0.2; transition: 0s; }
+        .tg-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
 
-        .auth-box { display: none; width: 100%; }
+        .auth-box { padding: 20px; width: 100%; }
         .auth-form {
-            background: var(--bg-color); padding: 24px; border-radius: 16px;
+            background: var(--card-bg); padding: 24px; border-radius: 16px;
             border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; margin-top: 16px;
         }
 
@@ -128,143 +127,90 @@
         html[dir="rtl"] .input-wrapper .material-icons { left: auto; right: 14px; }
         
         .input-wrapper input {
-            width: 100%; padding: 14px 14px 14px 44px; background: var(--card-bg);
+            width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color);
             border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px;
         }
         html[dir="rtl"] .input-wrapper input { padding: 14px 44px 14px 14px; }
 
-        .toggle-password-btn { position: absolute; right: 14px; cursor: pointer; color: var(--text-muted); }
-        html[dir="rtl"] .toggle-password-btn { right: auto; left: 14px; }
-
         .field-error { color: var(--danger); font-size: 14px; font-weight: 600; display: none; }
 
         .btn-prime {
-            background-color: var(--primary); color: #FFFFFF; border: none; height: 54px;
-            border-radius: 14px; font-size: 18px; font-weight: 700; cursor: pointer;
+            background-color: var(--primary); color: #FFFFFF; border: none; height: 50px;
+            border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.25s;
         }
         .btn-prime:hover { background-color: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); height: 50px; border-radius: 12px; font-size: 16px; cursor: pointer; }
 
-        .btn-outline {
-            background: transparent; border: 1px solid var(--text-main); color: var(--text-main);
-            height: 50px; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
+        /* البحث بأسلوب تليجرام */
+        .search-box { padding: 10px 16px; background: var(--bg-color); }
+        .search-inner { position: relative; display: flex; align-items: center; }
+        .search-inner .search-icon { position: absolute; left: 14px; color: var(--text-muted); }
+        html[dir="rtl"] .search-inner .search-icon { left: auto; right: 14px; }
+        .search-inner input {
+            width: 100%; padding: 10px 14px 10px 44px; background: var(--card-bg);
+            border: none; border-radius: 10px; color: var(--text-main); font-size: 15px;
         }
+        html[dir="rtl"] .search-inner input { padding: 10px 44px 10px 14px; }
 
-        .search-box { position: relative; display: flex; align-items: center; }
-        .search-box .search-icon { position: absolute; left: 14px; color: var(--primary); }
-        html[dir="rtl"] .search-box .search-icon { left: auto; right: 14px; }
-        
-        .search-box input {
-            width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color);
-            border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-size: 16px;
-        }
-        html[dir="rtl"] .search-box input { padding: 14px 44px 14px 14px; }
-
-        .search-clear { position: absolute; right: 14px; color: var(--text-muted); cursor: pointer; display: none; }
-        html[dir="rtl"] .search-clear { right: auto; left: 14px; }
-
-        .filter-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        /* الفلاتر كعلامات تبويب علوية */
+        .filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 10px 16px; border-bottom: 1px solid var(--border-color); }
         .filter-chip {
-            background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-muted);
-            padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+            background: var(--card-bg); border: none; color: var(--text-muted);
+            padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
-        .filter-chip.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
+        .filter-chip.active { background: var(--primary); color: #FFFFFF; }
 
-        .year-card { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
-        .year-card-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--card-bg); }
-        .year-card-meta { display: flex; align-items: center; gap: 12px; }
-        .year-card-meta .folder-icon { color: var(--primary); }
-        .arrow-icon { color: var(--text-muted); transition: transform 0.25s ease; }
-        .year-card.open > .year-card-header .arrow-icon { transform: rotate(180deg); }
-        .year-card-content { display: none; padding: 12px 16px; border-top: 1px solid var(--border-color); background: var(--bg-color); }
-
-        .module-folder { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .module-folder-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-        .module-folder.open > .module-folder-header .arrow-icon { transform: rotate(180deg); }
-        .module-folder-content { display: none; padding: 12px; background: var(--bg-color); border-top: 1px solid var(--border-color); }
-        .module-title-wrapper { display: flex; align-items: center; gap: 10px; }
-        .module-folder-icon { color: #FFB300; font-size: 22px; }
-
-        .empty-placeholder {
-            background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 10px;
-            padding: 14px; text-align: center; color: var(--text-muted); font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+        /* المحادثات بأسلوب تليجرام (قائمة المواد) */
+        .tg-chat-list { display: flex; flex-direction: column; }
+        .tg-chat-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s;
         }
-        .empty-placeholder .material-icons { font-size: 22px; color: var(--text-muted); }
-
-        .file-list { list-style: none; padding: 0; margin: 0; }
-        .file-row { background: var(--card-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 15px; }
-
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; display: none; backdrop-filter: blur(2px); }
-        .sidebar {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background-color: var(--card-bg); z-index: 9999; padding: 20px;
-            box-sizing: border-box; overflow-y: auto; transition: left 0.25s ease; display: flex; flex-direction: column; gap: 20px;
+        .tg-chat-item:hover { background: var(--card-bg); }
+        .tg-avatar {
+            width: 48px; height: 48px; border-radius: 50%; background: #2b5278;
+            color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; flex-shrink: 0;
         }
-        .sidebar.open { left: 0; }
-        html[dir="rtl"] .sidebar { left: auto; right: -300px; transition: right 0.25s ease; }
-        html[dir="rtl"] .sidebar.open { right: 0; left: auto; }
+        .tg-chat-info { flex: 1; min-width: 0; }
+        .tg-chat-top { display: flex; justify-content: space-between; align-items: center; }
+        .tg-chat-name { font-weight: 700; font-size: 16px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tg-chat-meta { font-size: 12px; color: var(--text-muted); }
+        .tg-chat-msg { font-size: 14px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 
-        .profile-card { background: var(--bg-color); border-radius: 16px; padding: 16px; border: 1px solid var(--border-color); text-align: center; }
-        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; background: var(--card-bg); margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary); color: var(--primary); }
-        .profile-grid { text-align: initial; font-size: 14px; color: var(--text-muted); margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
-        .profile-grid div { display: flex; justify-content: space-between; }
-        .profile-grid span { color: var(--text-main); font-weight: 600; }
+        /* قائمة الملفات الداخلية (تفتح كمستندات داخل محادثة) */
+        .tg-file-box { background: var(--card-bg); border-radius: 12px; padding: 8px; margin: 8px 16px; display: none; }
+        .file-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
+        .file-row:last-child { border-bottom: none; }
 
-        .stats-row { display: flex; gap: 8px; margin-top: 12px; }
-        .stat-box { flex: 1; background: var(--card-bg); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); cursor: pointer; }
-        .stat-value { font-size: 18px; font-weight: 700; color: var(--primary); }
-        .stat-label { font-size: 12px; color: var(--text-muted); }
+        /* شريط التنقل السفلي الاحترافي مثل تليجرام */
+        .tg-bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 600px; height: 60px; background: var(--card-bg);
+            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .tg-nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); cursor: pointer; font-size: 12px; font-weight: 600; width: 25%; height: 100%;
+        }
+        .tg-nav-item.active { color: var(--primary); }
+        .tg-nav-item .material-icons { font-size: 24px; margin-bottom: 2px; }
 
-        .settings-section { display: flex; flex-direction: column; background: var(--bg-color); padding: 14px; border-radius: 14px; }
-        .settings-header-toggle { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; color: var(--primary); cursor: pointer; padding: 4px 0; user-select: none; }
-        .settings-header-toggle .expand-icon { font-size: 18px; transition: transform 0.25s ease; }
-        .settings-section.open .expand-icon { transform: rotate(180deg); }
-        .settings-content-wrapper { display: none; flex-direction: column; gap: 16px; margin-top: 16px; }
+        /* واجهة اتصل بنا */
+        .contact-view { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+        .contact-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 14px; }
 
-        .setting-switch { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-main); }
-        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .25s; border-radius: 22px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .25s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        /* واجهة الإعدادات المستقلة */
+        .settings-view { display: none; padding: 16px; flex-direction: column; gap: 16px; }
 
         .modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             width: 95%; max-width: 480px; background: var(--card-bg); border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease;
-            max-height: 90vh; overflow-y: auto;
         }
         .modal.open { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .app-footer { text-align: center; font-size: 14px; color: var(--text-muted); margin-top: auto; padding: 20px 0; }
-
-        .select-input-container { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 12px; }
-        .select-input-container .material-icons { position: absolute; left: 12px; color: var(--primary); pointer-events: none; }
-        html[dir="rtl"] .select-input-container .material-icons { left: auto; right: 12px; }
-        .select-input-container select { padding-left: 40px; background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
-        html[dir="rtl"] .select-input-container select { padding-left: 12px; padding-right: 40px; }
-
-        .custom-dropzone { border: 2px dashed var(--primary); background: var(--bg-color); border-radius: 14px; padding: 24px; text-align: center; cursor: pointer; transition: background 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 16px; }
-        .custom-dropzone:hover { background: rgba(76, 175, 80, 0.05); }
-        .custom-file-btn { background-color: var(--primary-dark); color: white; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; }
-
-        .tag-cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; margin-top: 4px; }
-        .tag-card-item { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s; }
-        .tag-card-item.selected { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .upload-summary-box { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; font-size: 14px; display: none; margin-bottom: 16px; }
-        .summary-title { font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .summary-val { font-weight: 600; color: var(--text-main); }
-
-        .progress-box-container { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; text-align: center; display: none; margin-bottom: 16px; }
-        .progress-bar-bg { width: 100%; height: 10px; background: var(--border-color); border-radius: 5px; overflow: hidden; margin-top: 8px; }
-        .progress-bar-fill { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
-
-        .btn-big-upload { height: 56px; font-size: 18px; margin-top: 10px; }
-        #manualOptionsArea { display: none; }
-        .recent-files-box { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; margin-bottom: 25px; }
-        .recent-title { font-size: 14px; font-weight: 700; color: var(--primary); margin: 0 0 10px 0; display: flex; align-items: center; gap: 6px; }
-        .recent-title .material-icons { font-size: 18px; }
+        .app-footer { text-align: center; font-size: 13px; color: var(--text-muted); padding: 10px 0; margin-top: auto; }
+        .empty-placeholder { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
     </style>
 </head>
 <body>
@@ -272,249 +218,141 @@
 <div id="splashScreen">
     <span class="material-icons splash-logo">science</span>
     <div class="splash-title">Programme Chimie</div>
-    <div style="font-size:14px; color:#4CAF50; margin-top:8px; font-weight:600;">Premium UI/UX System...</div>
+    <div style="font-size:14px; color:#2481CC; margin-top:8px; font-weight:600;">Telegram Layout Loading...</div>
 </div>
 
 <div class="container">
+    <!-- شاشة تسجيل الدخول -->
     <div id="authContainer" class="auth-box">
         <div style="text-align: center; margin-bottom: 10px;">
             <span class="material-icons" style="font-size: 56px; color: var(--primary);">account_circle</span>
             <h1 id="txtAuthTitle">Connexion</h1>
         </div>
-        
         <div class="auth-form">
-            <div class="input-wrapper">
-                <span class="material-icons">email</span>
-                <input type="email" id="authEmail" placeholder="Adresse Email">
-            </div>
+            <div class="input-wrapper"><span class="material-icons">email</span><input type="email" id="authEmail" placeholder="Adresse Email"></div>
             <div class="field-error" id="errEmail">Veuillez entrer une adresse email valide.</div>
-
-            <div class="input-wrapper">
-                <span class="material-icons">lock</span>
-                <input type="password" id="authPassword" placeholder="Mot de passe">
-                <span class="material-icons toggle-password-btn" onclick="togglePasswordVisibility('authPassword')">visibility</span>
-            </div>
+            <div class="input-wrapper"><span class="material-icons">lock</span><input type="password" id="authPassword" placeholder="Mot de passe"></div>
             <div class="field-error" id="errPassword">Le mot de passe doit contenir au moins 6 caractères.</div>
-
             <div class="field-error" id="errAuthGeneral" style="text-align:center;"></div>
-            <div class="loader" id="authLoader"></div>
-            <button class="btn-prime ripple" onclick="handleAuth()" id="btnAuthAction">Se connecter / S'inscrire</button>
-            
-            <button class="btn-prime ripple" onclick="loginWithGoogle()" style="background-color: #db4437; height: 50px; font-size: 16px; font-weight: 600; border-radius: 14px; margin-top: 4px;">
-                <span class="material-icons">g_mobiledata</span> Connexion avec Google
-            </button>
-            <button class="btn-outline ripple" onclick="loginWithPhone()" style="height: 50px; font-size: 16px; font-weight: 600; border-radius: 14px; margin-top: 2px;">
-                <span class="material-icons" style="font-size: 18px; vertical-align: middle; margin-right: 6px;">phone</span> Connexion par Téléphone
-            </button>
-            <div id="recaptcha-container" style="margin-top: 4px;"></div>
+            <button class="btn-prime" onclick="handleAuth()" id="btnAuthAction">Se connecter / S'inscrire</button>
+            <button class="btn-prime" onclick="loginWithGoogle()" style="background-color: #db4437;"><span class="material-icons">g_mobiledata</span> Connexion avec Google</button>
+            <button class="btn-outline" onclick="loginWithPhone()"><span class="material-icons">phone</span> Connexion par Téléphone</button>
+            <div id="recaptcha-container"></div>
         </div>
     </div>
 
-    <div id="appContainer" style="display: none; flex-direction: column; gap: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="material-icons" style="cursor: pointer; font-size: 28px;" onclick="toggleSidebar(true)">menu</span>
-            <div style="text-align: center;">
-                <h2>Programme Chimie</h2>
-                <div id="txtSubHeader" style="font-size: 14px; color: var(--text-muted);">Espace Universitaire d'Étude</div>
+    <!-- الواجهة الرئيسية للتطبيق (بعد تسجيل الدخول) -->
+    <div id="appContainer" style="display: none; flex-direction: column;">
+        <!-- شريط تليجرام العلوي -->
+        <div class="tg-header">
+            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="openUploadModal()">add_circle_outline</span>
+            <h2 id="tgMainTitle">Telegram Chimie</h2>
+            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="logoutUser()">logout</span>
+        </div>
+
+        <!-- واجهة المحادثات (المواد والملفات) -->
+        <div id="view-chats">
+            <div class="search-box">
+                <div class="search-inner">
+                    <span class="material-icons search-icon">search</span>
+                    <input type="text" id="appSearch" oninput="triggerSearch()" placeholder="Rechercher un cours...">
+                </div>
             </div>
-            <span class="material-icons" style="cursor: pointer; font-size: 28px; color: var(--primary);" onclick="openUploadModal()">add_circle</span>
-        </div>
 
-        <div class="search-box">
-            <span class="material-icons search-icon">search</span>
-            <input type="text" id="appSearch" oninput="triggerSearch()" placeholder="Rechercher un cours, TD, TP ou archives...">
-            <span class="material-icons search-clear" id="searchClearBtn" onclick="clearSearch()">cancel</span>
-        </div>
-
-        <div class="filter-container">
-            <div class="filter-chip active" id="filter-all" onclick="setFilter('all')">Tout voir</div>
-            <div class="filter-chip" id="filter-cours" onclick="setFilter('Cours')">Cours</div>
-            <div class="filter-chip" id="filter-td" onclick="setFilter('TD')">TD</div>
-            <div class="filter-chip" id="filter-tp" onclick="setFilter('TP')">TP</div>
-            <div class="filter-chip" id="filter-examen" onclick="setFilter('Examen')">Archives</div>
-        </div>
-
-        <div class="recent-files-box" id="recentFilesBox" style="display:none;">
-            <p class="recent-title" id="txtRecentTitle"><span class="material-icons">history</span> آخر الملفات المضافة</p>
-            <ul class="file-list" id="recentFilesList"></ul>
-        </div>
-
-        <div id="yearCardsContainer"></div>
-    </div>
-
-    <div class="app-footer">
-        <p style="margin: 0; font-weight: 700;">Programme Chimie &copy; 2026</p>
-        <p style="margin: 4px 0 0 0; font-size: 12px; text-decoration: underline; cursor: pointer;" id="txtPrivacyLink" onclick="openPrivacyModal()">Politique de confidentialité</p>
-    </div>
-</div>
-
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
-<div class="sidebar" id="appSidebar">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 id="txtMenuTitle">Menu Général</h3>
-        <span class="material-icons" style="cursor: pointer; color: var(--danger);" onclick="toggleSidebar(false)">close</span>
-    </div>
-
-    <div class="profile-card">
-        <div class="profile-avatar"><span class="material-icons" style="font-size: 36px;">science</span></div>
-        <div id="profName" style="font-weight: 700; font-size: 18px;">Mohamed Lemine</div>
-        <div class="profile-grid">
-            <div id="gridEmail">Email: <span id="profEmail">...</span></div>
-            <div id="gridLevel">Niveau: <span>L1/L2/L3 Chimie</span></div>
-            <div id="gridDate">Inscription: <span id="profDate">...</span></div>
-        </div>
-
-        <div class="stats-row">
-            <div class="stat-box" onclick="alert('Total des modules : 37')">
-                <div class="stat-value">37</div>
-                <div class="stat-label" id="statLblMat">Matières</div>
+            <div class="filter-container">
+                <div class="filter-chip active" id="filter-all" onclick="setFilter('all')">Tout voir</div>
+                <div class="filter-chip" id="filter-cours" onclick="setFilter('Cours')">Cours</div>
+                <div class="filter-chip" id="filter-td" onclick="setFilter('TD')">TD</div>
+                <div class="filter-chip" id="filter-tp" onclick="setFilter('TP')">TP</div>
+                <div class="filter-chip" id="filter-examen" onclick="setFilter('Examen')">Archives</div>
             </div>
-            <div class="stat-box" onclick="toggleSidebar(false); document.getElementById('appSearch').focus();">
-                <div class="stat-value" id="statFilesCount">0</div>
-                <div class="stat-label" id="statLblFiles">Fichiers</div>
+
+            <!-- قائمة المحادثات (القنوات) الديناميكية -->
+            <div class="tg-chat-list" id="tgChatListContainer"></div>
+        </div>
+
+        <!-- واجهة معلومات الاتصال بنا المحدثة بدلاً من جهات الاتصال القديمة -->
+        <div id="view-contact" class="contact-view">
+            <h2 style="margin-bottom: 10px; font-weight: 800; text-align: center;">Contactez-nous / اتصل بنا</h2>
+            <div class="contact-card">
+                <span class="material-icons" style="color: #4CAF50; font-size: 32px;">chat</span>
+                <div>
+                    <div style="font-weight: 700; font-size: 16px;">WhatsApp</div>
+                    <div style="color: var(--text-muted); font-size: 14px; user-select: all;">+22233039964</div>
+                </div>
             </div>
-            <div class="stat-box" onclick="alert('Favoris bientôt disponible.')">
-                <div class="stat-value">0</div>
-                <div class="stat-label" id="statLblFav">Favoris</div>
+            <div class="contact-card">
+                <span class="material-icons" style="color: #2481CC; font-size: 32px;">email</span>
+                <div>
+                    <div style="font-weight: 700; font-size: 16px;">Email</div>
+                    <div style="color: var(--text-muted); font-size: 14px; user-select: all;">medlemin4303@gmail.com</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div style="display: flex; flex-direction: column; background: var(--bg-color); padding: 14px; border-radius: 14px;" class="settings-section" id="settingsContainerSection">
-        <div class="settings-header-toggle" onclick="toggleSettingsAccordion()">
-            <span id="txtSettingsHeader">PARAMÈTRES</span>
-            <span class="material-icons expand-icon">expand_more</span>
-        </div>
-        
-        <div class="settings-content-wrapper" id="settingsFieldsWrapper">
-            <div class="setting-switch">
-                <span id="optDarkMode">Mode sombre</span>
-                <label class="switch">
+        <!-- واجهة الإعدادات -->
+        <div id="view-settings" class="settings-view">
+            <h2>Paramètres</h2>
+            <div class="auth-form" style="margin-top: 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Mode sombre</span>
                     <input type="checkbox" id="darkToggle" checked onchange="toggleThemeMode()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="setting-switch">
-                <span id="optLanguage">Langue / اللغة</span>
-                <select id="langSelect" onchange="toggleLanguage()" style="width: auto; padding: 4px; font-size: 12px; border-radius: 8px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color);">
-                    <option value="fr" selected>Français</option>
-                    <option value="ar">العربية</option>
-                </select>
-            </div>
-
-            <div class="setting-switch">
-                <span id="optNotifications">Notifications Cloud</span>
-                <span style="font-size:12px; color: var(--primary); font-weight:700;" id="statusActive">Actif</span>
-            </div>
-
-            <div class="setting-switch" style="cursor:pointer;" onclick="alert('v2.9.0')">
-                <span id="optUpdate">Mise à jour auto</span>
-                <span class="material-icons" style="font-size: 18px;">autorenew</span>
-            </div>
-
-            <div class="setting-switch" style="cursor:pointer;" onclick="alert('Cache vidé.')">
-                <span id="optCache">Nettoyage du cache</span>
-                <span class="material-icons" style="font-size: 18px;">cleaning_services</span>
-            </div>
-
-            <div class="setting-switch" style="cursor:pointer;" onclick="openAboutModal()">
-                <span id="optAbout">À propos</span>
-                <span class="material-icons" style="font-size: 18px;">info</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Langue / اللغة</span>
+                    <select id="langSelect" onchange="toggleLanguage()" style="padding:6px; border-radius:8px; background:var(--bg-color); color:var(--text-main); border:1px solid var(--border-color);">
+                        <option value="fr" selected>Français</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </div>
+                <button class="btn-outline" style="border-color: var(--danger); color: var(--danger);" onclick="deleteUserAccount()">Supprimer le compte</button>
             </div>
         </div>
-    </div>
 
-    <button class="btn-outline ripple" style="margin-top: auto;" onclick="logoutUser()" id="btnLogout">Déconnexion</button>
-    <button class="btn-prime ripple" style="background: var(--danger); height: 44px; font-size:14px;" onclick="deleteUserAccount()" id="btnDeleteAcc">Supprimer le compte</button>
+        <!-- شريط التنقل السفلي على طراز تليجرام -->
+        <div class="tg-bottom-nav">
+            <div class="tg-nav-item active" id="nav-chats" onclick="switchView('chats')">
+                <span class="material-icons">forum</span>
+                <span id="navLblChats">Messages</span>
+            </div>
+            <div class="tg-nav-item" id="nav-contact" onclick="switchView('contact')">
+                <span class="material-icons">contact_support</span>
+                <span id="navLblContact">Contact</span>
+            </div>
+            <div class="tg-nav-item" id="nav-settings" onclick="switchView('settings')">
+                <span class="material-icons">settings</span>
+                <span id="navLblSettings">Paramètres</span>
+            </div>
+        </div>
+
+        <div class="app-footer">
+            <p style="margin: 0; font-weight: 700;">Programme Chimie &copy; 2026</p>
+        </div>
+    </div>
 </div>
 
+<!-- مودال الرفع -->
 <div class="modal" id="uploadModal">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-        <h3 id="modalUploadTitle" style="margin:0; font-size:20px; font-weight:800;">رفع ملف جديد</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="margin:0;">رفع ملف جديد</h3>
         <span class="material-icons" style="cursor: pointer; color: var(--danger);" onclick="closeModal('uploadModal')">close</span>
     </div>
-    <p id="txtModalSub" style="font-size:12px; color:var(--text-muted); margin:0 0 16px 0;">يرجى اختيار ملف PDF فقط</p>
-    
-    <div style="display: flex; flex-direction: column;">
-        <div class="custom-dropzone" onclick="document.getElementById('fileInput').click()">
-            <span class="material-icons" id="customFileIcon" style="font-size:40px; color:var(--primary);">picture_as_pdf</span>
-            <span id="customFileText" style="font-size:14px; font-weight:600;">اسحب ملف PDF هنا أو اضغط لاختيار ملف</span>
-            <div class="custom-file-btn ripple"><span class="material-icons">description</span> <span id="txtBtnSelectText">اختر ملف PDF</span></div>
-        </div>
-        <input type="file" id="fileInput" accept=".pdf" onchange="handlePremiumFileSelection()" style="display:none;">
-
-        <div id="manualOptionsArea">
-            <label id="lblSelectYear" style="margin-bottom:4px; font-size:14px;"><span class="material-icons" style="font-size:14px; vertical-align:middle; color:var(--primary);">school</span> السنة الدراسية</label>
-            <div class="select-input-container">
-                <span class="material-icons">school</span>
-                <select id="uploadYear" onchange="updateSemesters()">
-                    <option value="L1">Première Année (L1)</option>
-                    <option value="L2">Deuxième Année (L2)</option>
-                    <option value="L3">Troisième Année (L3)</option>
-                </select>
-            </div>
-
-            <label id="lblSelectSem" style="margin-bottom:4px; font-size:14px;"><span class="material-icons" style="font-size:14px; vertical-align:middle; color:var(--primary);">calendar_today</span> الفصل الدراسي</label>
-            <div class="select-input-container">
-                <span class="material-icons">calendar_today</span>
-                <select id="uploadSemester" onchange="updateModules()"></select>
-            </div>
-
-            <label id="lblSelectMod" style="margin-bottom:4px; font-size:14px;"><span class="material-icons" style="font-size:14px; vertical-align:middle; color:var(--primary);">menu_book</span> المادة</label>
-            <div class="select-input-container">
-                <span class="material-icons">menu_book</span>
-                <select id="uploadModule" onchange="updateUploadSummary()"></select>
-            </div>
-            
-            <label id="lblSelectTag" style="margin-top:16px; margin-bottom:4px; font-size:14px;"><span class="material-icons" style="font-size:14px; vertical-align:middle; color:var(--primary);">local_offer</span> نوع الملف</label>
-            <div class="tag-cards-grid">
-                <div class="tag-card-item selected ripple" id="cardTag-Cours" onclick="selectPremiumTag('Cours')"><span class="material-icons">menu_book</span> <span>Cours</span></div>
-                <div class="tag-card-item ripple" id="cardTag-TD" onclick="selectPremiumTag('TD')"><span class="material-icons">assignment</span> <span>TD</span></div>
-                <div class="tag-card-item ripple" id="cardTag-TP" onclick="selectPremiumTag('TP')"><span class="material-icons">biotech</span> <span>TP</span></div>
-                <div class="tag-card-item ripple" id="cardTag-Examen" onclick="selectPremiumTag('Examen')"><span class="material-icons">description</span> <span>Examen</span></div>
-            </div>
-        </div>
-
-        <div class="progress-box-container" id="uploadProgressBox">
-            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
-                <span id="txtProgressLabel" style="color:var(--primary);">Analyse...</span>
-                <span id="txtProgressPercent">0%</span>
-            </div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="uploadProgressBarFill"></div></div>
-        </div>
-
-        <div class="upload-summary-box" id="uploadSummaryBox">
-            <div class="summary-title"><span class="material-icons">analytics</span> <span id="txtSumBoxTitle">معلومات وملخص الملف</span></div>
-            <div class="summary-row"><span id="sumLblName">اسم الملف:</span> <span class="summary-val" id="sumValName" style="word-break:break-all;">-</span></div>
-            <div class="summary-row"><span id="sumLblSize">حجم ونوع الملف:</span> <span class="summary-val" id="sumValSize">-</span></div>
-            <div class="summary-row"><span id="sumLblYear">السنة:</span> <span class="summary-val" id="sumValYear">-</span></div>
-            <div class="summary-row"><span id="sumLblSem">الفصل:</span> <span class="summary-val" id="sumValSem">-</span></div>
-            <div class="summary-row"><span id="sumLblMod">المادة:</span> <span class="summary-val" id="sumValMod">-</span></div>
-            <div class="summary-row"><span id="sumLblTag">النوع:</span> <span class="summary-val" id="sumValTag">-</span></div>
-        </div>
-        
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="btn-outline ripple" style="flex: 1; height:56px;" onclick="closeModal('uploadModal')" id="btnCancelUpload">إلغاء</button>
-            <button class="btn-prime btn-big-upload ripple" style="flex: 1.5;" onclick="saveFileMetadata()" id="btnSaveUpload"><span class="material-icons">cloud_upload</span> <span id="txtBtnUploadLabel">رفع الملف</span></button>
-        </div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <input type="file" id="fileInput" accept=".pdf" onchange="handlePremiumFileSelection()">
+        <select id="uploadYear" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;">
+            <!-- تم التخلص من خيار السنة الأولى نهائياً هنا -->
+            <option value="L2" selected>Deuxième Année (L2)</option>
+            <option value="L3">Troisième Année (L3)</option>
+        </select>
+        <select id="uploadSemester" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;">
+            <option value="S3">S3</option><option value="S4">S4</option><option value="S5">S5</option><option value="S6">S6</option>
+        </select>
+        <select id="uploadModule" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;"></select>
+        <select id="uploadTag" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px;">
+            <option value="Cours">Cours</option><option value="TD">TD</option><option value="TP">TP</option><option value="Examen">Examen</option>
+        </select>
+        <button class="btn-prime" onclick="saveFileMetadata()">رفع وتأكيد</button>
     </div>
-</div>
-
-<div class="modal" id="aboutModal">
-    <h3>À propos</h3>
-    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        Programme Chimie est un assistant universitaire conçu pour structurer l'accès aux ressources pédagogiques.
-    </p>
-    <button class="btn-prime ripple" style="width: 100%; height:44px;" onclick="closeModal('aboutModal')">Fermer</button>
-</div>
-
-<div class="modal" id="privacyModal">
-    <h3>Politique de confidentialité</h3>
-    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-        Vos données sont sécurisées via l'infrastructure Google Firebase.
-    </p>
-    <button class="btn-prime ripple" style="width: 100%; height:44px; margin-top: 10px;" onclick="closeModal('privacyModal')">Fermer</button>
 </div>
 
 <script>
@@ -532,18 +370,13 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
+    // هندسة البيانات بعد حذف السنة الأولى (L1) تماماً
     const chemistryArchitecture = {
-        L1: {
-            modulesCount: 10, semestres: ["S1", "S2"],
-            S1: ["Atomistique", "Thermodynamique physique", "Algèbre 1", "Analyse 1", "Anglais 1"],
-            S2: ["Thermodynamique chimique I", "Cinétique chimique", "Optique géométrique", "Electricité", "Informatique 1"],
-            matières: ["Atomistique", "Thermodynamique physique", "Algèbre 1", "Analyse 1", "Anglais 1", "Thermodynamique chimique I", "Cinétique chimique", "Optique géométrique", "Electricité", "Informatique 1"]
-        },
         L2: {
             modulesCount: 17, semestres: ["S3", "S4"],
-            S3: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discرètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication"],
+            S3: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication"],
             S4: ["Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"],
-            matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contرؤل de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Méكانismes reactionnels"]
+            matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"]
         },
         L3: {
             modulesCount: 10, semestres: ["S5", "S6"],
@@ -553,54 +386,21 @@
         }
     };
 
-    const semestersMap = { L1: ['S1', 'S2'], L2: ['S3', 'S4'], L3: ['S5', 'S6'] };
-
-    const dictionary = {
-        fr: {
-            authTitle: "Connexion", subHeader: "Espace Universitaire d'Étude", searchPlace: "Rechercher un cours, TD, TP ou archives...",
-            all: "Tout voir", menuTitle: "Menu Général", gridEmail: "Email: ", gridLevel: "Niveau: ", gridDate: "Inscription: ",
-            statMat: "Matières", statFiles: "Fichiers", statFav: "Favoris", settingsHeader: "PARAMÈTRES", optDarkMode: "Mode sombre",
-            optLanguage: "Langue / اللغة", optNotifications: "Notifications Cloud", statusActive: "Actif", optUpdate: "Mise à jour auto",
-            optCache: "Nettoyage du cache", optAbout: "À propos", btnLogout: "Déconnexion", btnDeleteAcc: "Supprimer le compte",
-            modalUpload: "Ajouter un document PDF", btnCancel: "Annuler", btnSave: "Sauvegarder", emptyPlaceholder: "Aucun fichier disponible pour le moment.",
-            yearL1: "Première Année (L1)", yearL2: "Deuxième Année (L2)", yearL3: "Troisième Année (L3)", filterExamen: "Archives"
-        },
-        ar: {
-            authTitle: "تسجيل الدخول", subHeader: "الفضاء الجامعي للدراسة", searchPlace: "ابحث عن درس، عمل موجه، عمل تطبيقي أو أرشيف...",
-            all: "عرض الكل", menuTitle: "القائمة العامة", gridEmail: "البريد: ", gridLevel: "المستوى: ", gridDate: "التسجيل: ",
-            statMat: "المواد", statFiles: "الملفات", statFav: "المفضلة", settingsHeader: "الإعدادات", optDarkMode: "الوضع المظلم",
-            optLanguage: "Langue / اللغة", optNotifications: "الإشعارات السحابية", statusActive: "نشط", optUpdate: "تحديث تلقائي",
-            optCache: "تنظيف الذاكرة المؤقتة", optAbout: "حول التطبيق", btnLogout: "تسجيل خروج", btnDeleteAcc: "حذف الحساب",
-            modalUpload: "رفع ملف جديد", btnCancel: "إلغاء", btnSave: "رفع الملف", emptyPlaceholder: "لا توجد ملفات متاحة حالياً.",
-            yearL1: "السنة الأولى (L1)", yearL2: "السنة الثانية (L2)", yearL3: "السنة الثالثة (L3)", filterExamen: "الأرشيف"
-        }
-    };
-
     let selectedFilterTag = 'all';
     let currentFetchedFiles = [];
     let currentLang = 'fr';
-    let selectedPremiumTagValue = 'Cours';
 
     window.addEventListener('load', () => {
         setTimeout(() => {
             const splash = document.getElementById('splashScreen');
-            if (splash) {
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 300);
-            }
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
         }, 1000);
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW registration failed:', err));
-        }
     });
 
-    // إضافة الدالة التي سقطت سهواً لإظهار التطبيق بعد فحص الحساب بنجاح
     auth.onAuthStateChanged(user => {
         if(user) {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('appContainer').style.display = 'flex';
-            syncUserProfileData(user);
             fetchUserFilesRealtime(user.uid);
         } else {
             document.getElementById('appContainer').style.display = 'none';
@@ -608,584 +408,158 @@
         }
     });
 
-    function toggleSettingsAccordion() {
-        const section = document.getElementById('settingsContainerSection');
-        const wrapper = document.getElementById('settingsFieldsWrapper');
-        if (section.classList.contains('open')) {
-            section.classList.remove('open'); wrapper.style.display = 'none';
-        } else {
-            section.classList.add('open'); wrapper.style.display = 'flex';
-        }
-    }
-
-    function toggleLanguage() {
-        currentLang = document.getElementById('langSelect').value;
-        const html = document.getElementById('appHtml');
-        html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+    function switchView(viewName) {
+        document.getElementById('view-chats').style.display = viewName === 'chats' ? 'block' : 'none';
+        document.getElementById('view-contact').style.display = viewName === 'contact' ? 'flex' : 'none';
+        document.getElementById('view-settings').style.display = viewName === 'settings' ? 'block' : 'none';
         
-        document.getElementById('txtAuthTitle').textContent = dictionary[currentLang].authTitle;
-        document.getElementById('txtSubHeader').textContent = dictionary[currentLang].subHeader;
-        document.getElementById('appSearch').placeholder = dictionary[currentLang].searchPlace;
-        document.getElementById('filter-all').textContent = dictionary[currentLang].all;
-        document.getElementById('filter-examen').textContent = dictionary[currentLang].filterExamen;
-        document.getElementById('txtMenuTitle').textContent = dictionary[currentLang].menuTitle;
-        document.getElementById('statLblMat').textContent = dictionary[currentLang].statMat;
-        document.getElementById('statLblFiles').textContent = dictionary[currentLang].statFiles;
-        document.getElementById('statLblFav').textContent = dictionary[currentLang].statFav;
-        document.getElementById('txtSettingsHeader').textContent = dictionary[currentLang].settingsHeader;
-        document.getElementById('optDarkMode').textContent = dictionary[currentLang].optDarkMode;
-        document.getElementById('optLanguage').textContent = dictionary[currentLang].optLanguage;
-        document.getElementById('optNotifications').textContent = dictionary[currentLang].optNotifications;
-        document.getElementById('statusActive').textContent = dictionary[currentLang].statusActive;
-        document.getElementById('optUpdate').textContent = dictionary[currentLang].optUpdate;
-        document.getElementById('optCache').textContent = dictionary[currentLang].optCache;
-        document.getElementById('optAbout').textContent = dictionary[currentLang].optAbout;
-        document.getElementById('btnLogout').textContent = dictionary[currentLang].btnLogout;
-        document.getElementById('btnDeleteAcc').textContent = dictionary[currentLang].btnDeleteAcc;
-        document.getElementById('btnCancelUpload').textContent = dictionary[currentLang].btnCancel;
-        document.getElementById('btnSaveUpload').textContent = dictionary[currentLang].btnSave;
-        
-        renderArchitectureTree();
-        renderRecentFiles();
-    }
-
-    function togglePasswordVisibility(id) {
-        const input = document.getElementById(id);
-        input.type = input.type === 'password' ? 'text' : 'password';
-    }
-
-    function toggleSidebar(status) {
-        const sidebar = document.getElementById('appSidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if(status) { sidebar.classList.add('open'); overlay.style.display = 'block'; }
-        else { sidebar.classList.remove('open'); overlay.style.display = 'none'; }
-    }
-
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-    
-    function openUploadModal() { 
-        openModal('uploadModal'); 
-        updateSemesters();
-        resetUploadUI();
-    }
-    
-    function openAboutModal() { openModal('aboutModal'); }
-    function openPrivacyModal() { openModal('privacyModal'); }
-
-    function toggleThemeMode() {
-        const isChecked = document.getElementById('darkToggle').checked;
-        document.documentElement.setAttribute('data-theme', isChecked ? 'dark' : 'light');
-    }
-
-    const authErrorMessages = {
-        fr: {
-            'auth/invalid-email': "Adresse email invalide.",
-            'auth/wrong-password': "Mot de passe incorrect.",
-            'auth/invalid-credential': "Email ou mot de passe incorrect.",
-            'auth/user-disabled': "Ce compte a été désactivé.",
-            'auth/email-already-in-use': "Cet email est déjà utilisé par un autre compte.",
-            'auth/weak-password': "Le mot de passe est trop faible (6 caractères minimum).",
-            'auth/too-many-requests': "Trop de tentatives. Réessayez plus tard.",
-            'auth/network-request-failed': "Erreur réseau. Vérifiez votre connexion.",
-            default: "Une erreur est survenue. Veuillez réessayer."
-        },
-        ar: {
-            'auth/invalid-email': "البريد الإلكتروني غير صالح.",
-            'auth/wrong-password': "كلمة المرور غير صحيحة.",
-            'auth/invalid-credential': "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-            'auth/user-disabled': "تم تعطيل هذا الحساب.",
-            'auth/email-already-in-use': "هذا البريد الإلكتروني مستخدم من طرف حساب آخر.",
-            'auth/weak-password': "كلمة المرور ضعيفة جداً (6 أحرف على الأقل).",
-            'auth/too-many-requests': "محاولات كثيرة جداً. حاول لاحقاً.",
-            'auth/network-request-failed': "خطأ في الشبكة، تحقق من اتصالك بالإنترنت.",
-            default: "حدث خطأ ما، حاول مرة أخرى."
-        }
-    };
-
-    function showAuthError(msg) {
-        const box = document.getElementById('errAuthGeneral');
-        box.textContent = msg;
-        box.style.display = msg ? 'block' : 'none';
-    }
-
-    function handleAuth() {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value;
-        showAuthError('');
-        document.getElementById('errEmail').style.display = 'none';
-        document.getElementById('errPassword').style.display = 'none';
-
-        let hasFieldError = false;
-        if(!email.includes('@')) { document.getElementById('errEmail').style.display = 'block'; hasFieldError = true; }
-        if(password.length < 6) { document.getElementById('errPassword').style.display = 'block'; hasFieldError = true; }
-        if(hasFieldError) return;
-
-        document.getElementById('authLoader').style.display = 'block';
-        document.getElementById('btnAuthAction').disabled = true;
-
-        auth.signInWithEmailAndPassword(email, password).then(() => {
-            document.getElementById('authLoader').style.display = 'none';
-            document.getElementById('btnAuthAction').disabled = false;
-        }).catch(err => {
-            if(err.code === 'auth/user-not-found') {
-                auth.createUserWithEmailAndPassword(email, password).then(cred => {
-                    db.collection("users").doc(cred.user.uid).set({
-                        email: email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    document.getElementById('authLoader').style.display = 'none';
-                    document.getElementById('btnAuthAction').disabled = false;
-                }).catch(createErr => {
-                    document.getElementById('authLoader').style.display = 'none';
-                    document.getElementById('btnAuthAction').disabled = false;
-                    const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
-                    showAuthError(dict[createErr.code] || dict.default);
-                });
-            } else {
-                document.getElementById('authLoader').style.display = 'none';
-                document.getElementById('btnAuthAction').disabled = false;
-                const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
-                showAuthError(dict[err.code] || dict.default);
-            }
-        });
-    }
-
-    // دوال المصادقة الحديثة المضافة للربط السحابي مع Google والهاتف
-    function loginWithGoogle() {
-        showAuthError('');
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            // يتم تخزين بيانات المستخدم الجديد داخل Firestore إذا لم تكن موجودة
-            if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
-                db.collection("users").doc(result.user.uid).set({
-                    email: result.user.email || "",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-        }).catch((error) => {
-            console.error("Google Auth Error:", error);
-            const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
-            showAuthError(dict[error.code] || error.message);
-        });
-    }
-
-    function loginWithPhone() {
-        showAuthError('');
-        if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'invisible'
-            });
-        }
-        
-        const promptMsg = currentLang === 'ar' ? "أدخل رقم هاتفك مع رمز الدولة الكامل (مثال: +222...):" : "Entrez votre numéro de téléphone avec le code pays (ex: +222...):";
-        const codeMsg = currentLang === 'ar' ? "أدخل رمز التحقق (OTP) المكون من 6 أرقام المرسل إليك:" : "Entrez le code de vérification (OTP) reçu :";
-        
-        const phoneNumber = prompt(promptMsg);
-        if (!phoneNumber) return;
-
-        auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-            .then((confirmationResult) => {
-                const verificationCode = prompt(codeMsg);
-                if (!verificationCode) return null;
-                return confirmationResult.confirm(verificationCode);
-            })
-            .then((result) => {
-                if (result && result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
-                    db.collection("users").doc(result.user.uid).set({
-                        email: result.user.phoneNumber || "Phone User",
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error("Phone Auth Error:", error);
-                const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
-                showAuthError(dict[error.code] || error.message);
-            });
-    }
-
-    function logoutUser() { auth.signOut(); toggleSidebar(false); }
-
-    function deleteUserAccount() {
-        if(confirm("Supprimer le compte définitivement ?")) {
-            const user = auth.currentUser;
-            if(user) { db.collection("users").doc(user.uid).delete().then(() => user.delete()); }
-        }
-    }
-
-    function syncUserProfileData(user) {
-        document.getElementById('profEmail').textContent = user.email || user.phoneNumber || "Google User";
-        document.getElementById('profName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "User");
-        db.collection("users").doc(user.uid).get().then(doc => {
-            if(doc.exists && doc.data().createdAt) {
-                document.getElementById('profDate').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
-            }
-        });
+        document.querySelectorAll('.tg-nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`nav-${viewName}`).classList.add('active');
     }
 
     function fetchUserFilesRealtime(uid) {
-        db.collection("files").where("userId", "==", uid).orderBy("createdAt", "desc")
-          .onSnapshot(snapshot => {
+        db.collection("files").where("userId", "==", uid).onSnapshot(snapshot => {
             currentFetchedFiles = [];
             snapshot.forEach(doc => { currentFetchedFiles.push(Object.assign({ id: doc.id }, doc.data())); });
-            document.getElementById('statFilesCount').textContent = currentFetchedFiles.length;
-            renderRecentFiles();
-            renderArchitectureTree();
-        }, err => {
-            console.warn('fetchUserFilesRealtime error:', err);
+            renderTelegramLayout();
         });
     }
 
-    function renderRecentFiles() {
-        const box = document.getElementById('recentFilesBox');
-        const list = document.getElementById('recentFilesList');
-        if (!currentFetchedFiles.length) { box.style.display = 'none'; list.innerHTML = ''; return; }
-        box.style.display = 'block';
-        list.innerHTML = '';
-        currentFetchedFiles.slice(0, 5).forEach(file => {
-            const li = document.createElement('li');
-            li.className = 'file-row';
-            li.style.cursor = 'pointer';
-            li.innerHTML = `<span>📄 ${file.name}</span><span class="material-icons" style="color:var(--primary); font-size:20px;">open_in_new</span>`;
-            li.onclick = () => openFile(file);
-            list.appendChild(li);
-        });
-    }
+    // بناء الواجهة المطابقة تماماً لتليجرام بناءً على ملفاتك وموادك
+    function renderTelegramLayout() {
+        const container = document.getElementById('tgChatListContainer');
+        const searchQuery = document.getElementById('appSearch').value.toLowerCase();
+        container.innerHTML = '';
 
-    function openFile(file) {
-        if (file && file.url) { window.open(file.url, '_blank'); }
-        else { alert(currentLang === 'ar' ? 'رابط الملف غير متوفر.' : "Lien du fichier indisponible."); }
-    }
+        let totalRendered = 0;
 
-    function openFileById(id) {
-        const file = currentFetchedFiles.find(f => f.id === id);
-        if (file) openFile(file);
-    }
-
-    function deleteFileById(id) {
-        const file = currentFetchedFiles.find(f => f.id === id);
-        if (!file) return;
-        const confirmMsg = currentLang === 'ar' ? `حذف "${file.name}" نهائياً؟` : `Supprimer "${file.name}" définitivement ?`;
-        if (!confirm(confirmMsg)) return;
-
-        const deleteDoc = () => db.collection("files").doc(id).delete();
-
-        if (file.storagePath) {
-            storage.ref(file.storagePath).delete().then(deleteDoc).catch(err => {
-                // إن كان الملف محذوفاً مسبقاً من التخزين، نحذف السجل فقط
-                if (err.code === 'storage/object-not-found') { deleteDoc(); }
-                else { alert((currentLang === 'ar' ? 'فشل الحذف: ' : 'Échec de la suppression : ') + err.message); }
-            });
-        } else {
-            deleteDoc();
-        }
-    }
-
-    function handlePremiumFileSelection() {
-        const fileInput = document.getElementById('fileInput');
-        if (fileInput.files.length === 0) return;
-        const file = fileInput.files[0];
-        
-        if (file.type !== "application/pdf" && !file.name.endsWith('.pdf')) {
-            alert("❌ uniquement PDF.");
-            return;
-        }
-        document.getElementById('customFileText').textContent = "✅ " + file.name;
-        autoDetectFromFileName(file.name);
-    }
-
-    function autoDetectFromFileName(name) {
-        const nameLower = name.toLowerCase();
-        let detectedYear = "L2";
-        let detectedSem = "";
-        let detectedModule = "";
-
-        if (nameLower.includes('l1') || nameLower.includes('s1') || nameLower.includes('s2')) detectedYear = 'L1';
-        else if (nameLower.includes('l3') || nameLower.includes('s5') || nameLower.includes('s6')) detectedYear = 'L3';
-
-        document.getElementById('uploadYear').value = detectedYear;
-        updateSemesters();
-
-        if (nameLower.includes('s1')) detectedSem = 'S1';
-        else if (nameLower.includes('s2')) detectedSem = 'S2';
-        else if (nameLower.includes('s3')) detectedSem = 'S3';
-        else if (nameLower.includes('s4')) detectedSem = 'S4';
-        else if (nameLower.includes('s5')) detectedSem = 'S5';
-        else if (nameLower.includes('s6')) detectedSem = 'S6';
-
-        if (detectedSem) {
-            document.getElementById('uploadSemester').value = detectedSem;
-            updateModules();
-        }
-
-        const currentSem = document.getElementById('uploadSemester').value;
-        if (chemistryArchitecture[detectedYear] && chemistryArchitecture[detectedYear][currentSem]) {
-            for (let mat of chemistryArchitecture[detectedYear][currentSem]) {
-                let keywords = mat.toLowerCase().split(' ');
-                for (let word of keywords) {
-                    if (word.length > 3 && nameLower.includes(word)) { detectedModule = mat; break; }
-                }
-                if (detectedModule) break;
-            }
-        }
-
-        let detectedTag = 'Cours';
-        if (nameLower.includes('td')) detectedTag = 'TD';
-        else if (nameLower.includes('tp')) detectedTag = 'TP';
-        else if (nameLower.includes('exam') || nameLower.includes('archiv')) detectedTag = 'Examen';
-        selectPremiumTag(detectedTag);
-
-        const manualArea = document.getElementById('manualOptionsArea');
-        if (detectedModule) {
-            document.getElementById('uploadModule').value = detectedModule;
-            manualArea.style.display = 'none'; 
-        } else {
-            manualArea.style.display = 'block'; 
-        }
-        updateUploadSummary();
-    }
-
-    function selectPremiumTag(tag) {
-        selectedPremiumTagValue = tag;
-        document.querySelectorAll('.tag-card-item').forEach(el => el.classList.remove('selected'));
-        const card = document.getElementById(`cardTag-${tag}`);
-        if(card) card.classList.add('selected');
-        updateUploadSummary();
-    }
-
-    function updateSemesters() {
-        const year = document.getElementById('uploadYear').value;
-        const semSelect = document.getElementById('uploadSemester');
-        semSelect.innerHTML = '';
-        semestersMap[year].forEach(sem => {
-            let opt = document.createElement('option'); opt.value = sem; opt.textContent = sem; semSelect.appendChild(opt);
-        });
-        updateModules();
-    }
-
-    function updateModules() {
-        const year = document.getElementById('uploadYear').value;
-        const sem = document.getElementById('uploadSemester').value;
-        const modSelect = document.getElementById('uploadModule');
-        modSelect.innerHTML = '';
-        if(chemistryArchitecture[year] && chemistryArchitecture[year][sem]) {
-            chemistryArchitecture[year][sem].forEach(mod => {
-                let opt = document.createElement('option'); opt.value = mod; opt.textContent = mod; modSelect.appendChild(opt);
-            });
-        }
-        updateUploadSummary();
-    }
-
-    function updateUploadSummary() {
-        const fileInput = document.getElementById('fileInput');
-        if (fileInput.files.length === 0) return;
-        document.getElementById('uploadSummaryBox').style.display = 'block';
-        document.getElementById('sumValName').textContent = fileInput.files[0].name;
-        document.getElementById('sumValSize').textContent = (fileInput.files[0].size / 1024 / 1024).toFixed(2) + ' MB \u2022 PDF';
-        document.getElementById('sumValYear').textContent = document.getElementById('uploadYear').value;
-        document.getElementById('sumValSem').textContent = document.getElementById('uploadSemester').value;
-        document.getElementById('sumValMod').textContent = document.getElementById('uploadModule').value;
-        document.getElementById('sumValTag').textContent = selectedPremiumTagValue === 'Examen' ? dictionary[currentLang].filterExamen : selectedPremiumTagValue;
-    }
-
-    function resetUploadUI() {
-        document.getElementById('uploadSummaryBox').style.display = 'none';
-        document.getElementById('manualOptionsArea').style.display = 'none';
-        document.getElementById('uploadProgressBox').style.display = 'none';
-        document.getElementById('uploadProgressBarFill').style.width = '0%';
-        document.getElementById('customFileText').textContent = dictionary[currentLang] && currentLang === 'ar' ? 'اسحب ملف PDF هنا أو اضغط لاختيار ملف' : 'Glissez un PDF ici ou cliquez pour choisir';
-        document.getElementById('fileInput').value = '';
-    }
-
-    const MAX_FILE_SIZE_MB = 25;
-
-    function saveFileMetadata() {
-        const fileInput = document.getElementById('fileInput');
-        if (fileInput.files.length === 0) return;
-        const file = fileInput.files[0];
-        const uid = auth.currentUser.uid;
-
-        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-            alert((currentLang === 'ar' ? `حجم الملف يتجاوز ${MAX_FILE_SIZE_MB} ميغابايت.` : `Le fichier dépasse ${MAX_FILE_SIZE_MB} Mo.`));
-            return;
-        }
-
-        const year = document.getElementById('uploadYear').value;
-        const sem = document.getElementById('uploadSemester').value;
-        const mod = document.getElementById('uploadModule').value;
-        const tag = selectedPremiumTagValue;
-
-        const btn = document.getElementById('btnSaveUpload');
-        const cancelBtn = document.getElementById('btnCancelUpload');
-        btn.disabled = true;
-        cancelBtn.disabled = true;
-
-        const progressBox = document.getElementById('uploadProgressBox');
-        const progressFill = document.getElementById('uploadProgressBarFill');
-        const progressPercent = document.getElementById('txtProgressPercent');
-        const progressLabel = document.getElementById('txtProgressLabel');
-        progressBox.style.display = 'block';
-        progressLabel.textContent = currentLang === 'ar' ? 'جارٍ رفع الملف...' : 'Téléversement en cours...';
-        progressFill.style.width = '0%';
-        progressPercent.textContent = '0%';
-
-        const safeName = file.name.replace(/[^a-zA-Z0-9._\-]/g, '_');
-        const storagePath = `files/${uid}/${Date.now()}_${safeName}`;
-        const storageRef = storage.ref(storagePath);
-        const uploadTask = storageRef.put(file);
-
-        uploadTask.on('state_changed', snapshot => {
-            const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            progressFill.style.width = pct + '%';
-            progressPercent.textContent = pct + '%';
-        }, error => {
-            btn.disabled = false;
-            cancelBtn.disabled = false;
-            progressBox.style.display = 'none';
-            alert((currentLang === 'ar' ? 'فشل رفع الملف: ' : "Échec de l'envoi : ") + error.message);
-        }, () => {
-            uploadTask.snapshot.ref.getDownloadURL().then(url => {
-                db.collection("files").add({
-                    userId: uid, name: file.name, url: url, storagePath: storagePath, size: file.size,
-                    year: year, sem: sem, mod: mod, tag: tag,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    btn.disabled = false;
-                    cancelBtn.disabled = false;
-                    progressBox.style.display = 'none';
-                    progressFill.style.width = '0%';
-                    fileInput.value = '';
-                    closeModal('uploadModal');
-                }).catch(err => {
-                    btn.disabled = false;
-                    cancelBtn.disabled = false;
-                    progressBox.style.display = 'none';
-                    alert((currentLang === 'ar' ? 'فشل حفظ بيانات الملف: ' : "Échec de l'enregistrement : ") + err.message);
+        Object.keys(chemistryArchitecture).forEach(yearKey => {
+            chemistryArchitecture[yearKey].matières.forEach(matName => {
+                const filesForThisModule = currentFetchedFiles.filter(f => {
+                    return f.year === yearKey && f.mod === matName && 
+                           (selectedFilterTag === 'all' || f.tag === selectedFilterTag) &&
+                           (f.name.toLowerCase().includes(searchQuery) || matName.toLowerCase().includes(searchQuery));
                 });
+
+                if(searchQuery !== '' && filesForThisModule.length === 0) return;
+                totalRendered++;
+
+                const initialLetter = matName.charAt(0).toUpperCase();
+                const filesCount = filesForThisModule.length;
+
+                const chatItem = document.createElement('div');
+                chatItem.innerHTML = `
+                    <div class="tg-chat-item" onclick="toggleFileBox('${yearKey}-${matName.replace(/\s+/g, '')}')">
+                        <div class="tg-avatar">${initialLetter}</div>
+                        <div class="tg-chat-info">
+                            <div class="tg-chat-top">
+                                <div class="tg-chat-name">${matName}</div>
+                                <div class="tg-chat-meta">${yearKey}</div>
+                            </div>
+                            <div class="tg-chat-msg">${filesCount} Document(s) disponible(s)</div>
+                        </div>
+                    </div>
+                    <div class="tg-file-box" id="box-${yearKey}-${matName.replace(/\s+/g, '')}"></div>
+                `;
+
+                const fileBox = chatItem.querySelector('.tg-file-box');
+                if(filesCount > 0) {
+                    filesForThisModule.forEach(file => {
+                        fileBox.innerHTML += `
+                            <div class="file-row">
+                                <span onclick="window.open('${file.url}', '_blank')" style="cursor:pointer; font-weight:600;">📄 ${file.name}</span>
+                                <span class="material-icons" style="color:var(--danger); cursor:pointer; font-size:20px;" onclick="deleteFileById('${file.id}')">delete</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    fileBox.innerHTML = `<div class="empty-placeholder">Aucun document dans cette catégorie</div>`;
+                }
+
+                container.appendChild(chatItem);
             });
         });
+
+        if(totalRendered === 0) {
+            container.innerHTML = `<div class="empty-placeholder">Aucun résultat trouvé</div>`;
+        }
+    }
+
+    function toggleFileBox(id) {
+        const box = document.getElementById(`box-${id}`);
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
     }
 
     function setFilter(tag) {
         selectedFilterTag = tag;
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        if(tag === 'all') document.getElementById('filter-all').classList.add('active');
-        else if(tag === 'Cours') document.getElementById('filter-cours').classList.add('active');
-        else if(tag === 'TD') document.getElementById('filter-td').classList.add('active');
-        else if(tag === 'TP') document.getElementById('filter-tp').classList.add('active');
-        else if(tag === 'Examen') document.getElementById('filter-examen').classList.add('active');
-        renderArchitectureTree();
+        document.getElementById(`filter-${tag.toLowerCase()}`).classList.add('active');
+        renderTelegramLayout();
     }
 
-    function triggerSearch() { renderArchitectureTree(); }
-    function clearSearch() { document.getElementById('appSearch').value = ''; renderArchitectureTree(); }
-
-    function toggleCard(cardElement) {
-        if(cardElement.classList.contains('open')) {
-            cardElement.classList.remove('open'); cardElement.querySelector('.year-card-content').style.display = 'none';
-        } else {
-            cardElement.classList.add('open'); cardElement.querySelector('.year-card-content').style.display = 'block';
-        }
-    }
-
-    function toggleModuleFolder(folderElement) {
-        if(folderElement.classList.contains('open')) {
-            folderElement.classList.remove('open'); folderElement.querySelector('.module-folder-content').style.display = 'none';
-        } else {
-            folderElement.classList.add('open'); folderElement.querySelector('.module-folder-content').style.display = 'block';
-        }
-    }
-
-    function renderArchitectureTree() {
-        const container = document.getElementById('yearCardsContainer');
-        const searchQuery = document.getElementById('appSearch').value.toLowerCase();
-        container.innerHTML = '';
-
-        Object.keys(chemistryArchitecture).forEach(yearKey => {
-            const currentYearData = chemistryArchitecture[yearKey];
-            const card = document.createElement('div');
-            card.className = 'year-card';
-            
-            const titleString = yearKey === 'L1' ? dictionary[currentLang].yearL1 : (yearKey === 'L2' ? dictionary[currentLang].yearL2 : dictionary[currentLang].yearL3);
-
-            card.innerHTML = `
-                <div class="year-card-header ripple" onclick="toggleCard(this.parentElement)">
-                    <div class="year-card-meta">
-                        <span class="material-icons folder-icon">folder</span>
-                        <div>
-                            <div style="font-weight:700; font-size:18px;">${titleString}</div>
-                            <div style="font-size:14px; color:var(--text-muted);">${currentYearData.modulesCount} ${dictionary[currentLang].statMat} &bull; Semestres: ${currentYearData.semestres.join(', ')}</div>
-                        </div>
-                    </div>
-                    <span class="material-icons arrow-icon">expand_more</span>
-                </div>
-                <div class="year-card-content"></div>
-            `;
-
-            const contentZone = card.querySelector('.year-card-content');
-            let yearHasVisibleData = false;
-
-            currentYearData.matières.forEach(matName => {
-                let connectedSem = currentYearData.S1 && currentYearData.S1.includes(matName) ? "S1" : (currentYearData.S2 && currentYearData.S2.includes(matName) ? "S2" : (currentYearData.S3 && currentYearData.S3.includes(matName) ? "S3" : (currentYearData.S4 && currentYearData.S4.includes(matName) ? "S4" : (currentYearData.S5 && currentYearData.S5.includes(matName) ? "S5" : semestersMap[yearKey][1]))));
-
-                const filesForThisModule = currentFetchedFiles.filter(f => {
-                    return f.year === yearKey && (selectedFilterTag === 'all' || f.tag === selectedFilterTag) &&
-                           (f.name.toLowerCase().includes(searchQuery) || matName.toLowerCase().includes(searchQuery));
-                });
-
-                if(searchQuery !== '' && filesForThisModule.length === 0) return;
-                yearHasVisibleData = true;
-
-                const moduleFolderWrapper = document.createElement('div');
-                moduleFolderWrapper.className = 'module-folder';
-                moduleFolderWrapper.innerHTML = `
-                    <div class="module-folder-header ripple" onclick="toggleModuleFolder(this.parentElement)">
-                        <div class="module-title-wrapper">
-                            <span class="material-icons module-folder-icon">folder_open</span>
-                            <span style="font-weight:700; font-size:16px;">[${connectedSem}] ${matName}</span>
-                        </div>
-                        <span class="material-icons arrow-icon" style="font-size:18px;">expand_more</span>
-                    </div>
-                    <div class="module-folder-content"></div>
-                `;
-
-                const moduleContentZone = moduleFolderWrapper.querySelector('.module-folder-content');
-
-                if(filesForThisModule.length > 0) {
-                    const ul = document.createElement('ul'); ul.className = 'file-list';
-                    filesForThisModule.forEach(file => {
-                        ul.innerHTML += `
-                            <li class="file-row">
-                                <span style="cursor:pointer; flex:1;" onclick="openFileById('${file.id}')">📄 ${file.name}</span>
-                                <span style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:12px; background:var(--bg-color); padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); font-weight:700; color:var(--primary);">#${file.tag === 'Examen' ? dictionary[currentLang].filterExamen : file.tag}</span>
-                                    <span class="material-icons" style="font-size:20px; color:var(--primary); cursor:pointer;" onclick="openFileById('${file.id}')">open_in_new</span>
-                                    <span class="material-icons" style="font-size:20px; color:var(--danger); cursor:pointer;" onclick="event.stopPropagation(); deleteFileById('${file.id}')">delete</span>
-                                </span>
-                            </li>`;
-                    });
-                    moduleContentZone.appendChild(ul);
-                } else {
-                    moduleContentZone.innerHTML += `
-                        <div class="empty-placeholder">
-                            <span class="material-icons">info_outline</span>
-                            <span>${dictionary[currentLang].emptyPlaceholder}</span>
-                        </div>`;
-                }
-                
-                contentZone.appendChild(moduleFolderWrapper);
-                if(searchQuery !== '') {
-                    moduleFolderWrapper.classList.add('open');
-                    moduleContentZone.style.display = 'block';
-                }
+    function triggerSearch() { renderTelegramLayout(); }
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function openUploadModal() { openModal('uploadModal'); populateUploadModules(); }
+    
+    function populateUploadModules() {
+        const modSelect = document.getElementById('uploadModule');
+        modSelect.innerHTML = '';
+        Object.keys(chemistryArchitecture).forEach(yk => {
+            chemistryArchitecture[yk].matières.forEach(m => {
+                let opt = document.createElement('option'); opt.value = m; opt.textContent = `[${yk}] ${m}`; modSelect.appendChild(opt);
             });
-
-            if(yearHasVisibleData || searchQuery === '') {
-                container.appendChild(card);
-                if(searchQuery !== '') { card.classList.add('open'); contentZone.style.display = 'block'; }
-            }
         });
     }
+
+    function saveFileMetadata() {
+        const fileInput = document.getElementById('fileInput');
+        if(fileInput.files.length === 0) return;
+        const file = fileInput.files[0];
+        const uid = auth.currentUser.uid;
+
+        const year = document.getElementById('uploadYear').value;
+        const sem = document.getElementById('uploadSemester').value;
+        const mod = document.getElementById('uploadModule').value;
+        const tag = document.getElementById('uploadTag').value;
+
+        const storagePath = `files/${uid}/${Date.now()}_${file.name}`;
+        storage.ref(storagePath).put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
+            return db.collection("files").add({
+                userId: uid, name: file.name, url: url, storagePath: storagePath,
+                year: year, sem: sem, mod: mod, tag: tag, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }).then(() => { closeModal('uploadModal'); fileInput.value = ''; });
+    }
+
+    function deleteFileById(id) {
+        if(confirm("Supprimer ce fichier ?")) { db.collection("files").doc(id).delete(); }
+    }
+
+    function handleAuth() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value;
+        auth.signInWithEmailAndPassword(email, password).catch(() => auth.createUserWithEmailAndPassword(email, password));
+    }
+
+    function loginWithGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider);
+    }
+
+    function loginWithPhone() {
+        if (!window.recaptchaVerifier) { window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' }); }
+        const num = prompt("Numéro (+222...):");
+        if (!num) return;
+        auth.signInWithPhoneNumber(num, window.recaptchaVerifier).then(res => {
+            const code = prompt("Code verification:");
+            return res.confirm(code);
+        });
+    }
+
+    function logoutUser() { auth.signOut(); }
+    function toggleThemeMode() { document.documentElement.setAttribute('data-theme', document.getElementById('darkToggle').checked ? 'dark' : 'light'); }
+    function deleteUserAccount() { if(confirm("Supprimer le compte ?")) { auth.currentUser.delete(); } }
 </script>
 </body>
 </html>
