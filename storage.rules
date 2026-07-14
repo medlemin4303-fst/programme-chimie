@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// قواعد Storage — الصقها في Firebase Console > Storage > Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // كل مستخدم يرفع ويقرأ ويحذف فقط داخل مجلده الخاص: files/{uid}/...
+    match /files/{userId}/{fileName} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 26214400 // 25 ميغابايت كحد أقصى
+                   && request.resource.contentType == 'application/pdf';
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

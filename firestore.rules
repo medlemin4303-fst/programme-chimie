@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// قواعد Firestore — الصقها في Firebase Console > Firestore Database > Rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // كل مستخدم يقرأ ويعدّل بياناته الشخصية فقط
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // الملفات: كل مستخدم يرى ويدير ملفاته فقط
+    match /files/{fileId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.userId
+                    && request.resource.data.name is string
+                    && request.resource.data.url is string
+                    && request.resource.data.size is number
+                    && request.resource.data.size < 26214400; // 25 ميغابايت كحد أقصى
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // أي شيء آخر ممنوع افتراضياً
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
