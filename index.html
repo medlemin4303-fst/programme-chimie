@@ -17,6 +17,8 @@
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0F172A">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     
     <style>
         :root {
@@ -41,30 +43,100 @@
             --border-color: #E2E8F0;
         }
 
-        * { box-sizing: border-box; font-family: var(--font-app); outline: none; }
-        body { background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-main); transition: background-color 0.25s, color 0.25s; overflow-x: hidden; font-size: 16px; }
+        * {
+            box-sizing: border-box;
+            font-family: var(--font-app);
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0F172A; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
-        .splash-logo { font-size: 64px; color: var(--primary); animation: pulseLogo 1.5s infinite ease-in-out; }
-        @keyframes pulseLogo { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            transition: background-color 0.25s ease, color 0.25s ease;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
 
-        .container { max-width: 600px; margin: 0 auto; min-height: 100vh; background: var(--bg-color); display: flex; flex-direction: column; padding-bottom: 80px; }
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0F172A;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        .splash-logo {
+            font-size: 64px;
+            color: var(--primary);
+            animation: pulseLogo 1.5s infinite ease-in-out;
+        }
+        @keyframes pulseLogo {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
 
-        .app-header { background: var(--card-bg); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+
+        .app-header {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
         .app-header h2 { font-size: 20px; font-weight: 800; margin: 0; }
 
         .auth-box { padding: 24px; width: 100%; }
-        .auth-form { background: var(--card-bg); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+        .auth-form {
+            background: var(--card-bg); padding: 24px; border-radius: 16px;
+            border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; margin-top: 16px;
+        }
+
+        .pre-auth-lang {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 24px;
+            margin-top: 16px;
+        }
 
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper .material-icons { position: absolute; left: 14px; color: var(--text-muted); font-size: 20px; }
         html[dir="rtl"] .input-wrapper .material-icons { left: auto; right: 14px; }
-        .input-wrapper input { width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px; }
+        
+        .input-wrapper input {
+            width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color);
+            border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px;
+        }
         html[dir="rtl"] .input-wrapper input { padding: 14px 44px 14px 14px; }
 
         .field-error { color: var(--danger); font-size: 14px; font-weight: 600; display: none; }
 
-        .btn-prime { background-color: var(--primary); color: #FFFFFF; border: none; height: 50px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-prime {
+            background-color: var(--primary); color: #FFFFFF; border: none; height: 50px;
+            border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.25s;
+        }
         .btn-prime:hover { background-color: var(--primary-dark); }
         .btn-prime:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); height: 50px; border-radius: 12px; font-size: 16px; cursor: pointer; }
@@ -73,69 +145,128 @@
         .search-inner { position: relative; display: flex; align-items: center; }
         .search-inner .search-icon { position: absolute; left: 14px; color: var(--text-muted); }
         html[dir="rtl"] .search-inner .search-icon { left: auto; right: 14px; }
-        .search-inner input { width: 100%; padding: 12px 14px 12px 44px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 15px; }
+        .search-inner input {
+            width: 100%; padding: 12px 14px 12px 44px; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 15px;
+        }
         html[dir="rtl"] .search-inner input { padding: 12px 44px 12px 14px; }
 
         .filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 4px 20px 12px 20px; }
-        .filter-chip { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .filter-chip {
+            background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
         .filter-chip.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
 
         .folders-container { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; }
-        .folder-card { background: var(--card-bg); border-radius: 16px; padding: 18px 20px; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 16px; }
+        .folder-card {
+            background: var(--card-bg); border-radius: 16px; padding: 18px 20px;
+            border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 16px;
+            transition: border-color 0.2s;
+        }
+        .folder-card:hover { border-color: var(--primary); }
+        .folder-card .icon-circle {
+            width: 52px; height: 52px; border-radius: 14px; background: rgba(16, 185, 129, 0.1);
+            color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 28px;
+        }
 
-        /* تعديل عرض المواد ليصبح كروت منظمة عمودياً بدلاً من الجداول المتداخلة */
         .tg-chat-list { display: flex; flex-direction: column; gap: 10px; padding: 10px 20px; }
-        .tg-chat-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color 0.2s; }
-        .tg-chat-item:hover { border-color: var(--primary); }
-        .tg-avatar { width: 44px; height: 44px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .tg-chat-item {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer;
+        }
+        .tg-avatar {
+            width: 44px; height: 44px; border-radius: 12px; background: rgba(16, 185, 129, 0.1);
+            color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0;
+        }
         .tg-chat-info { flex: 1; min-width: 0; }
         .tg-chat-name { font-weight: 700; font-size: 16px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tg-chat-msg { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
         .channel-container { display: none; flex-direction: column; }
-        .channel-banner { background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%); padding: 24px 20px; border-bottom: 1px solid var(--border-color); }
+        .channel-banner {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%);
+            padding: 24px 20px; border-bottom: 1px solid var(--border-color);
+        }
         .channel-title { font-size: 22px; font-weight: 800; margin: 0; }
 
         .channel-feed { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
-        .feed-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .feed-card {
+            background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
+            padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
         .feed-header { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
         .feed-actions { display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px; }
-        .feed-btn { background: transparent; border: none; color: var(--primary); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .feed-btn {
+            background: transparent; border: none; color: var(--primary); font-weight: 700;
+            font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .feed-btn.delete-btn { color: var(--danger); }
 
-        .app-bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 70px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 12px; font-weight: 600; width: 25%; height: 100%; }
+        .app-bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 600px; height: 70px; background: var(--card-bg);
+            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); cursor: pointer; font-size: 12px; font-weight: 600; width: 25%; height: 100%;
+        }
         .nav-item.active { color: var(--primary); }
+        .nav-item .material-icons { font-size: 26px; margin-bottom: 2px; }
 
-        .fab-add { position: fixed; bottom: 85px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); z-index: 999; }
+        .fab-add {
+            position: fixed; bottom: 85px; right: 20px;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--primary); color: #FFFFFF; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); z-index: 999;
+        }
         html[dir="rtl"] .fab-add { right: auto; left: 20px; }
 
-        .profile-view { display: none; padding: 24px 20px; flex-direction: column; gap: 20px; align-items: center; }
-        .profile-info-box { width: 100%; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .profile-view { display: none; padding: 24px 20px; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
+        .profile-avatar-container {
+            width: 100px; height: 100px; border-radius: 50%; background: var(--card-bg);
+            border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 50px;
+        }
+        .profile-info-box {
+            width: 100%; background: var(--card-bg); border-radius: 16px;
+            border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 16px;
+        }
         .profile-row-info { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
         .profile-row-info:last-child { border-bottom: none; }
+        .profile-row-info span:first-child { color: var(--text-muted); font-size: 14px; }
+        .profile-row-info span:last-child { font-weight: 700; color: var(--text-main); }
 
-        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 95%; max-width: 480px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease; }
+        .modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 95%; max-width: 480px; background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease;
+        }
         .modal.open { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        
-        /* تصميم مخصص لعنصر اختيار الملف الجديد */
-        .custom-file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(16, 185, 129, 0.1); border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; cursor: pointer; color: var(--primary); font-weight: bold; text-align: center; }
-        .selected-file-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .app-footer { text-align: center; font-size: 13px; color: var(--text-muted); padding: 10px 0; margin-top: auto; }
+        .empty-placeholder { padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px; }
 
-        .upload-progress-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; font-size: 13px; margin-top: 10px; }
+        .custom-file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(16, 185, 129, 0.08); border: 2px dashed var(--primary); padding: 24px; border-radius: 14px; cursor: pointer; color: var(--primary); font-weight: bold; }
+        .selected-file-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; align-items: center; justify-content: space-between; margin-top: 10px; }
+
+        .upload-progress-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 13px; margin-top: 10px; }
         .upload-progress-bar-bg { width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 6px; }
-        .upload-progress-bar-fill { width: 0%; height: 100%; background: var(--primary); }
+        .upload-progress-bar-fill { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
     </style>
 </head>
 <body>
 
 <div id="splashScreen">
     <span class="material-icons splash-logo">science</span>
-    <div class="splash-title">Programme Chimie</div>
+    <div style="font-size: 26px; font-weight: 800; color: #FFFFFF; margin-top: 10px;">Programme Chimie</div>
 </div>
 
 <div class="container">
-    <div id="preAuthLang" style="display: flex; justify-content: flex-end; padding: 16px 24px;">
-        <select id="preLangSelect" onchange="toggleLanguagePreAuth()" style="padding:6px; border-radius:8px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); font-weight: 600;">
+    
+    <div id="preAuthLang" class="pre-auth-lang">
+        <select id="preLangSelect" onchange="toggleLanguagePreAuth()" style="padding:6px; border-radius:8px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); font-weight:600;">
             <option value="fr" selected>Français</option>
             <option value="ar">العربية</option>
         </select>
@@ -163,7 +294,7 @@
         <div class="app-header">
             <span id="btnBackToFolders" class="material-icons" style="cursor: pointer; font-size: 26px; display: none;" onclick="goBackToFolders()">arrow_back</span>
             <h2 id="appMainTitle">Programme Chimie</h2>
-            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="alert('v3.0.0')">info</span>
+            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="alert('Version 3.0.0')">info</span>
         </div>
 
         <div class="fab-add" onclick="openUploadModal()" id="fabAddBtn">
@@ -178,6 +309,7 @@
                         <input type="text" id="appSearch" oninput="triggerSearch()" placeholder="Rechercher un cours...">
                     </div>
                 </div>
+
                 <div class="filter-container">
                     <div class="filter-chip active" id="filter-all" onclick="setFilter('all')">Tout voir</div>
                     <div class="filter-chip" id="filter-cours" onclick="setFilter('Cours')">Cours</div>
@@ -189,18 +321,18 @@
 
             <div id="foldersArea" class="folders-container">
                 <div class="folder-card" onclick="selectYearFolder('L2')">
-                    <div class="icon-circle"><span class="material-icons" style="color:var(--primary)">folder</span></div>
+                    <div class="icon-circle"><span class="material-icons">folder</span></div>
                     <div style="flex:1;">
                         <div style="font-weight: 800; font-size: 18px;" id="folderL2Title">Deuxième Année (L2)</div>
-                        <div style="color: var(--text-muted); font-size: 14px;">17 Matières • S3 & S4</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">17 Matières • Semestres S3 & S4</div>
                     </div>
                     <span class="material-icons" style="color: var(--text-muted);">chevron_right</span>
                 </div>
                 <div class="folder-card" onclick="selectYearFolder('L3')">
-                    <div class="icon-circle"><span class="material-icons" style="color:var(--primary)">folder</span></div>
+                    <div class="icon-circle"><span class="material-icons">folder</span></div>
                     <div style="flex:1;">
                         <div style="font-weight: 800; font-size: 18px;" id="folderL3Title">Troisième Année (L3)</div>
-                        <div style="color: var(--text-muted); font-size: 14px;">10 Matières • S5 & S6</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">10 Matières • Semestres S5 & S6</div>
                     </div>
                     <span class="material-icons" style="color: var(--text-muted);">chevron_right</span>
                 </div>
@@ -210,34 +342,40 @@
 
             <div id="channelArea" class="channel-container">
                 <div class="channel-banner">
-                    <h3 id="channelMatTitle" class="channel-title">Module</h3>
-                    <div id="channelMatSub" style="color:var(--text-muted); font-size:14px; margin-top:4px;">Filière Chimie</div>
+                    <h3 id="channelMatTitle" class="channel-title">Module Title</h3>
+                    <div id="channelMatSub" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Filière Chimie</div>
                 </div>
                 <div id="channelFeedContainer" class="channel-feed"></div>
             </div>
         </div>
 
-        <div id="view-contact" style="display:none; padding:20px; flex-direction:column; gap:16px;">
-            <h2 style="text-align:center;" id="txtContactHeading">Contact</h2>
+        <div id="view-contact" style="display: none; padding: 20px; flex-direction: column; gap: 16px;">
+            <h2 style="text-align: center;" id="txtContactHeading">Contactez-nous / اتصل بنا</h2>
             <div class="folder-card" onclick="window.open('https://wa.me/22233039964','_blank')">
-                <span class="material-icons" style="color:#25D366; font-size:32px;">chat</span>
-                <div><strong>WhatsApp</strong><br><span style="color:var(--text-muted)">+222 33 03 99 64</span></div>
+                <span class="material-icons" style="color: #25D366; font-size: 32px;">chat</span>
+                <div>
+                    <div style="font-weight: 700; font-size: 16px;">WhatsApp</div>
+                    <div style="color: var(--text-muted); font-size: 14px;">+222 33 03 99 64</div>
+                </div>
             </div>
             <div class="folder-card" onclick="window.open('mailto:medlemin4303@gmail.com')">
-                <span class="material-icons" style="color:var(--primary); font-size:32px;">email</span>
-                <div><strong>Email</strong><br><span style="color:var(--text-muted)">medlemin4303@gmail.com</span></div>
+                <span class="material-icons" style="color: var(--primary); font-size: 32px;">email</span>
+                <div>
+                    <div style="font-weight: 700; font-size: 16px;">Email</div>
+                    <div style="color: var(--text-muted); font-size: 14px;">medlemin4303@gmail.com</div>
+                </div>
             </div>
         </div>
 
-        <div id="view-settings" style="display:none; padding:20px; flex-direction:column; gap:16px;">
+        <div id="view-settings" style="display: none; padding: 20px; flex-direction: column; gap: 16px;">
             <h2 id="txtSettingsHeading">Paramètres</h2>
-            <div class="auth-form" style="margin-top:0;">
+            <div class="auth-form" style="margin-top: 0;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span id="optDarkMode">Mode sombre</span>
                     <input type="checkbox" id="darkToggle" checked onchange="toggleThemeMode()">
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Langue / اللغة</span>
+                    <span id="optLanguage">Langue / اللغة</span>
                     <select id="langSelect" onchange="toggleLanguage()" style="padding:6px; border-radius:8px; background:var(--bg-color); color:var(--text-main); border:1px solid var(--border-color);">
                         <option value="fr" selected>Français</option>
                         <option value="ar">العربية</option>
@@ -247,16 +385,16 @@
         </div>
 
         <div id="view-profile" class="profile-view">
-            <div style="width:100px; height:100px; border-radius:50%; background:var(--card-bg); border:3px solid var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:50px;"><span class="material-icons" style="font-size:50px;">person</span></div>
-            <h2 id="txtProfileWelcome" style="font-weight:800;">Mon Profil</h2>
+            <div class="profile-avatar-container"><span class="material-icons" style="font-size: 50px;">person</span></div>
+            <h2 id="txtProfileWelcome" style="margin: 0; font-weight: 800;">Mon Profil</h2>
             <div class="profile-info-box">
                 <div class="profile-row-info"><span id="lblProfName">Nom</span><span id="valProfName">-</span></div>
                 <div class="profile-row-info"><span id="lblProfEmail">Email</span><span id="valProfEmail">-</span></div>
                 <div class="profile-row-info"><span id="lblProfBirth">Date de Naissance</span><span>15/09/2004</span></div>
                 <div class="profile-row-info"><span id="lblProfJoined">Rejoint le</span><span id="valProfJoined">-</span></div>
             </div>
-            <button class="btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary);" onclick="logoutUser()" id="btnLogout">Déconnexion</button>
-            <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteUserAccount()" id="btnDeleteAccount">Supprimer le compte</button>
+            <button class="btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary); margin-top: 10px;" onclick="logoutUser()" id="btnLogout">Déconnexion</button>
+            <button class="btn-outline" id="btnDeleteAccount" style="width: 100%; border-color: var(--danger); color: var(--danger);" onclick="deleteUserAccount()">Supprimer le compte</button>
         </div>
 
         <div class="app-bottom-nav">
@@ -270,7 +408,7 @@
 
 <div class="modal" id="uploadModal">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 id="txtUploadModalTitle" style="margin:0;">رفع ملف جديد</h3>
+        <h3 style="margin:0;" id="txtUploadModalTitle">رفع ملف جديد</h3>
         <span class="material-icons" style="cursor: pointer; color: var(--danger);" onclick="closeModal('uploadModal')">close</span>
     </div>
     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -283,7 +421,7 @@
         <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="onFileSelectedCustom()" style="display:none;">
 
         <div class="selected-file-box" id="selectedFileBox">
-            <span id="lblSelectedFileName" style="font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">File_name.pdf</span>
+            <span id="lblSelectedFileName" style="font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">-</span>
             <span class="material-icons" style="color:var(--danger); cursor:pointer;" onclick="removeSelectedFile()">cancel</span>
         </div>
 
@@ -295,7 +433,7 @@
             <div class="upload-progress-bar-bg"><div class="upload-progress-bar-fill" id="uploadProgressBarFill"></div></div>
         </div>
 
-        <button class="btn-prime" onclick="processFileUploadAction()" id="btnConfirmUploadAction" style="margin-top:10px;" disabled>Confirm & Upload</button>
+        <button class="btn-prime" onclick="processFileUploadAction()" id="btnConfirmUploadAction" disabled>Confirm & Upload</button>
     </div>
 </div>
 
@@ -332,7 +470,7 @@
             welcomeProfile: "Mon Profil", lblName: "Nom", lblBirth: "Date de Naissance", lblJoined: "Rejoint le", logoutBtn: "Déconnexion"
         },
         ar: {
-            authTitle: "تسجيل الدخول", emailPh: "البريد الإلكتروني", passPh: "كلمة运行",
+            authTitle: "تسجيل الدخول", emailPh: "البريد الإلكتروني", passPh: "كلمة المرور",
             authBtn: "تسجيل الدخول / إنشاء حساب", googleBtn: "الدخول عبر Google", phoneBtn: "الدخول عبر الهاتف",
             errEmail: "يرجى إدخال بريد إلكتروني صالح.", errPassword: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل.",
             mainTitle: "برنامج الكيمياء", searchPh: "ابحث عن مادة...",
@@ -343,6 +481,34 @@
             welcomeProfile: "ملفي الشخصي", lblName: "الاسم", lblBirth: "تاريخ الميلاد", lblJoined: "تاريخ الانضمام", logoutBtn: "تسجيل الخروج"
         }
     };
+
+    const authErrorMessages = {
+        fr: {
+            'auth/invalid-email': "Adresse email invalide.", 'auth/wrong-password': "Mot de passe incorrect.",
+            'auth/invalid-credential': "Email ou mot de passe incorrect.", 'auth/user-disabled': "Ce compte a été désactivé.",
+            'auth/email-already-in-use': "Cet email est déjà utilisé par un another compte.",
+            'auth/weak-password': "Le mot de passe est trop faible (6 caractères minimum).",
+            'auth/too-many-requests': "Trop de tentatives. Réessayez plus tard.",
+            'auth/network-request-failed': "Erreur réseau. Vérifiez votre connexion.",
+            default: "Une erreur est survenue. Veuillez réessayer."
+        },
+        ar: {
+            'auth/invalid-email': "البريد الإلكتروني غير صالح.", 'auth/wrong-password': "كلمة المرور غير صحيحة.",
+            'auth/invalid-credential': "البريد الإلكتروني أو كلمة المرور غير صحيحة.", 'auth/user-disabled': "تم تعطيل هذا الحساب.",
+            'auth/email-already-in-use': "هذا البريد الإلكتروني مستخدم من طرف حساب آخر.",
+            'auth/weak-password': "كلمة المرور ضعيفة جداً (6 أحرف على الأقل).",
+            'auth/too-many-requests': "محاولات كثيرة جداً. حاول لاحقاً.",
+            'auth/network-request-failed': "خطأ في الشبكة، تحقق من اتصالك بالإنترنت.",
+            default: "حدث خطأ ما، حاول مرة أخرى."
+        }
+    };
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
+        }, 1000);
+    });
 
     auth.onAuthStateChanged(user => {
         if(user) {
@@ -363,6 +529,7 @@
         document.getElementById('view-contact').style.display = viewName === 'contact' ? 'flex' : 'none';
         document.getElementById('view-settings').style.display = viewName === 'settings' ? 'block' : 'none';
         document.getElementById('view-profile').style.display = viewName === 'profile' ? 'flex' : 'none';
+        
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`nav-${viewName}`).classList.add('active');
         document.getElementById('fabAddBtn').style.display = (viewName === 'chats') ? 'flex' : 'none';
@@ -399,13 +566,13 @@
         });
     }
 
-    // بناء قائمة المواد على هيئة كروت منظمة عمودياً تمنع التداخل والاكتظاظ على الهواتف
     function renderTelegramLayout() {
         const container = document.getElementById('tgChatListContainer');
         if (!currentSelectedYearFolder) return;
         const searchQuery = document.getElementById('appSearch').value.toLowerCase();
         container.innerHTML = '';
 
+        let totalRendered = 0;
         chemistryArchitecture[currentSelectedYearFolder].matières.forEach(matName => {
             const filesForThisModule = currentFetchedFiles.filter(f => {
                 return f.year === currentSelectedYearFolder && f.mod === matName && 
@@ -414,6 +581,7 @@
             });
 
             if(searchQuery !== '' && filesForThisModule.length === 0) return;
+            totalRendered++;
 
             const cardRow = document.createElement('div');
             cardRow.className = 'tg-chat-item';
@@ -421,12 +589,16 @@
                 <div class="tg-avatar">${matName.charAt(0).toUpperCase()}</div>
                 <div class="tg-chat-info">
                     <div class="tg-chat-top"><div class="tg-chat-name">${matName}</div></div>
-                    <div class="tg-chat-msg">${filesForThisModule.length} Document(s) • ${currentSelectedYearFolder}</div>
+                    <div class="tg-chat-msg">${filesForThisModule.length} Document(s) disponibles</div>
                 </div>
             `;
             cardRow.addEventListener('click', () => openMaterialChannel(matName));
             container.appendChild(cardRow);
         });
+
+        if(totalRendered === 0) {
+            container.innerHTML = `<div class="empty-placeholder">Aucun résultat trouvé</div>`;
+        }
     }
 
     function openMaterialChannel(matName) {
@@ -449,25 +621,34 @@
         filtered.forEach(file => {
             const card = document.createElement('div');
             card.className = 'feed-card';
+            const fileDate = file.createdAt ? file.createdAt.toDate().toLocaleDateString('fr-FR') : '-';
             card.innerHTML = `
-                <div class="feed-header"><span class="material-icons" style="font-size:16px;">schedule</span> <span>#${file.tag}</span></div>
+                <div class="feed-header"><span class="material-icons" style="font-size:16px;">schedule</span> <span>${fileDate}</span> <span style="margin-left:auto; color:var(--primary); font-weight:700;">#${file.tag}</span></div>
                 <div style="font-weight:700; font-size:15px; word-break:break-all;">📄 ${file.name}</div>
                 <div class="feed-actions">
-                    <button class="feed-btn open-f"><span class="material-icons" style="font-size:16px;">visibility</span> Open</button>
+                    <button class="feed-btn open-f"><span class="material-icons" style="font-size:16px;">visibility</span> Visualiser</button>
                 </div>
             `;
             card.querySelector('.open-f').addEventListener('click', () => window.open(file.url, '_blank'));
+            
+            if (file.userId === auth.currentUser.uid) {
+                const actions = card.querySelector('.feed-actions');
+                const del = document.createElement('button');
+                del.className = 'feed-btn delete-btn';
+                del.innerHTML = `<span class="material-icons" style="font-size:16px;">delete</span> Supprimer`;
+                del.addEventListener('click', () => deleteFileById(file.id));
+                actions.insertBefore(del, actions.firstChild);
+            }
             feedContainer.appendChild(card);
         });
     }
 
-    // إدارة عناصر الرفع المخصصة
     function onFileSelectedCustom() {
         const fileInput = document.getElementById('fileInput');
         if(fileInput.files.length === 0) return;
         const file = fileInput.files[0];
 
-        if(!file.name.toLowerCase().endsWith('.pdf')) {
+        if(!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
             alert('PDF files only!');
             fileInput.value = '';
             return;
@@ -502,7 +683,7 @@
 
         if(nameLower.includes('td')) t = "TD";
         else if(nameLower.includes('tp')) t = "TP";
-        else if(nameLower.includes('exam')) t = "Examen";
+        else if(nameLower.includes('exam') || nameLower.includes('archiv')) t = "Examen";
 
         const storagePath = `files/${auth.currentUser.uid}/${Date.now()}_${globalSelectedFile.name}`;
         const uploadTask = storage.ref(storagePath).put(globalSelectedFile);
@@ -529,6 +710,19 @@
         });
     }
 
+    function deleteFileById(id) {
+        const file = currentFetchedFiles.find(f => f.id === id);
+        if(!confirm("Supprimer ce fichier ?")) return;
+        const deleteDoc = () => db.collection("files").doc(id).delete();
+        if (file && file.storagePath) {
+            storage.ref(file.storagePath).delete().then(deleteDoc).catch(err => {
+                if (err.code === 'storage/object-not-found') deleteDoc();
+            });
+        } else {
+            deleteDoc();
+        }
+    }
+
     function setFilter(tag) {
         selectedFilterTag = tag;
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -543,7 +737,11 @@
     function syncUserProfileInfo(user) {
         document.getElementById('valProfEmail').textContent = user.email || "Phone Login";
         document.getElementById('valProfName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "Student");
-        document.getElementById('valProfJoined').textContent = new Date().toLocaleDateString('fr-FR');
+        db.collection("users").doc(user.uid).get().then(doc => {
+            if(doc.exists && doc.data().createdAt) {
+                document.getElementById('valProfJoined').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
+            }
+        });
     }
 
     function handleAuth() {
@@ -558,16 +756,18 @@
         const num = prompt("Phone (+222...):");
         if(num) auth.signInWithPhoneNumber(num, window.recaptchaVerifier).then(res => res.confirm(prompt("Code:")));
     }
+    
+     Zar.onAuthStateChanged = null;
     function logoutUser() { auth.signOut(); }
     function toggleThemeMode() { document.documentElement.setAttribute('data-theme', document.getElementById('darkToggle').checked ? 'dark' : 'light'); }
     function deleteUserAccount() { if(confirm("Delete Account?")) auth.currentUser.delete(); }
     function toggleLanguagePreAuth() { document.getElementById('langSelect').value = document.getElementById('preLangSelect').value; toggleLanguage(); }
+    
     function toggleLanguage() {
         currentLang = document.getElementById('langSelect').value;
         document.getElementById('preLangSelect').value = currentLang;
         const dict = dictionary[currentLang];
-        const isAr = currentLang === 'ar';
-        document.getElementById('appHtml').setAttribute('dir', isAr ? 'rtl' : 'ltr');
+        document.getElementById('appHtml').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
 
         document.getElementById('txtAuthTitle').textContent = dict.authTitle;
         document.getElementById('authEmail').placeholder = dict.emailPh;
