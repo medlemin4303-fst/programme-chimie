@@ -245,9 +245,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease;
         }
         .modal.open { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .app-footer { text-align: center; font-size: 13px; color: var(--text-muted); padding: 10px 0; margin-top: auto; }
-        .empty-placeholder { padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px; }
-
+        
         .custom-file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(16, 185, 129, 0.08); border: 2px dashed var(--primary); padding: 24px; border-radius: 14px; cursor: pointer; color: var(--primary); font-weight: bold; }
         .selected-file-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; align-items: center; justify-content: space-between; margin-top: 10px; }
 
@@ -441,10 +439,12 @@
     const chemistryArchitecture = {
         L2: {
             modulesCount: 17,
+            semestres: ["S3", "S4"],
             matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"]
         },
         L3: {
             modulesCount: 10,
+            semestres: ["S5", "S6"],
             matières: ["Anglais 3", "Méthodes spectroscopiques PM II", "Rédaction scientifique", "Réactivité et stéréochimie dynamique", "Méthodes séparatives", "Chimie quantique", "Électrochimie", "Thermodynamique chimique II", "Méthodes d'analyses courantes II", "Chimie des matériaux", "Chimie de coordinations", "Chimie du pétrole et des gaz", "Économie", "Chimie de l'eau", "Synthèse organique", "Chimie fine", "Droit", "Projet de fin d'études (PFE)", "Chimie verte"]
         }
     };
@@ -486,7 +486,7 @@
         fr: {
             'auth/invalid-email': "Adresse email invalide.", 'auth/wrong-password': "Mot de passe incorrect.",
             'auth/invalid-credential': "Email ou mot de passe incorrect.", 'auth/user-disabled': "Ce compte a été désactivé.",
-            'auth/email-already-in-use': "Cet email est déjà utilisé par un another compte.",
+            'auth/email-already-in-use': "Cet email est déjà utilisé par un autre compte.",
             'auth/weak-password': "Le mot de passe est trop faible (6 caractères minimum).",
             'auth/too-many-requests': "Trop de tentatives. Réessayez plus tard.",
             'auth/network-request-failed': "Erreur réseau. Vérifiez votre connexion.",
@@ -502,13 +502,6 @@
             default: "حدث خطأ ما، حاول مرة أخرى."
         }
     };
-
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const splash = document.getElementById('splashScreen');
-            if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
-        }, 1000);
-    });
 
     auth.onAuthStateChanged(user => {
         if(user) {
@@ -667,6 +660,15 @@
         document.getElementById('btnConfirmUploadAction').disabled = true;
     }
 
+    function resetUploadModalUI() {
+        globalSelectedFile = null;
+        document.getElementById('fileInput').value = '';
+        document.getElementById('selectedFileBox').style.display = 'none';
+        document.getElementById('uploadProgressBox').style.display = 'none';
+        document.getElementById('uploadProgressBarFill').style.width = '0%';
+        document.getElementById('btnConfirmUploadAction').disabled = true;
+    }
+
     function processFileUploadAction() {
         if(!globalSelectedFile) return;
         document.getElementById('btnConfirmUploadAction').disabled = true;
@@ -735,11 +737,13 @@
     function openModal(id) { document.getElementById(id).classList.add('open'); }
 
     function syncUserProfileInfo(user) {
-        document.getElementById('valProfEmail').textContent = user.email || "Phone Login";
+        document.getElementById('valProfEmail').textContent = user.email || "Compte Externe";
         document.getElementById('valProfName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "Student");
         db.collection("users").doc(user.uid).get().then(doc => {
             if(doc.exists && doc.data().createdAt) {
                 document.getElementById('valProfJoined').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
+            } else {
+                document.getElementById('valProfJoined').textContent = new Date().toLocaleDateString('fr-FR');
             }
         });
     }
@@ -757,7 +761,6 @@
         if(num) auth.signInWithPhoneNumber(num, window.recaptchaVerifier).then(res => res.confirm(prompt("Code:")));
     }
     
-     Zar.onAuthStateChanged = null;
     function logoutUser() { auth.signOut(); }
     function toggleThemeMode() { document.documentElement.setAttribute('data-theme', document.getElementById('darkToggle').checked ? 'dark' : 'light'); }
     function deleteUserAccount() { if(confirm("Delete Account?")) auth.currentUser.delete(); }
