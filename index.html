@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programme Chimie - Educational Platform</title>
     
+    <!-- الخطوط والأيقونات -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
+    <!-- SDK Firebase v8 المستقر -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
+    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0F172A">
     <link rel="icon" href="icon-192.png">
@@ -24,13 +27,14 @@
         :root {
             --bg-color: #0F172A;
             --card-bg: #1E293B;
-            --primary: #10B981; 
+            --primary: #10B981; /* زمردي حديث وجذاب بدلاً من أزرق تليجرام التقليدي */
             --primary-dark: #059669;
             --text-main: #F8FAFC;
             --text-muted: #94A3B8;
             --danger: #EF4444;
             --border-color: #334155;
             --font-app: 'Cairo', sans-serif;
+            --tg-blue: #38BDF8;
         }
 
         [data-theme="light"] {
@@ -40,6 +44,7 @@
             --primary-dark: #059669;
             --text-main: #0F172A;
             --text-muted: #64748B;
+            --danger: #EF4444;
             --border-color: #E2E8F0;
         }
 
@@ -81,6 +86,12 @@
             50% { transform: scale(1.06); opacity: 1; }
             100% { transform: scale(1); opacity: 0.8; }
         }
+        .splash-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-top: 15px;
+        }
 
         .container {
             max-width: 600px;
@@ -93,6 +104,7 @@
             padding-bottom: 80px;
         }
 
+        /* شريط علوي عصري فريد */
         .app-header {
             background: var(--card-bg);
             padding: 16px 20px;
@@ -113,6 +125,7 @@
             border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 16px; margin-top: 16px;
         }
 
+        /* حقل لغة متاح قبل تسجيل الدخول */
         .pre-auth-lang {
             display: flex;
             justify-content: flex-end;
@@ -127,7 +140,9 @@
         .input-wrapper input {
             width: 100%; padding: 14px 14px 14px 44px; background: var(--bg-color);
             border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px;
+            transition: border-color 0.2s;
         }
+        .input-wrapper input:focus { border-color: var(--primary); }
         html[dir="rtl"] .input-wrapper input { padding: 14px 44px 14px 14px; }
 
         .field-error { color: var(--danger); font-size: 14px; font-weight: 600; display: none; }
@@ -141,6 +156,7 @@
         .btn-prime:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); height: 50px; border-radius: 12px; font-size: 16px; cursor: pointer; }
 
+        /* حقل البحث والمصنفات */
         .search-box { padding: 12px 20px; background: var(--bg-color); }
         .search-inner { position: relative; display: flex; align-items: center; }
         .search-inner .search-icon { position: absolute; left: 14px; color: var(--text-muted); }
@@ -155,87 +171,98 @@
         .filter-chip {
             background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted);
             padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+            transition: all 0.2s;
         }
         .filter-chip.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
 
+        /* هيكلة المجلدات الأنيقة للسنين */
         .folders-container { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; }
         .folder-card {
             background: var(--card-bg); border-radius: 16px; padding: 18px 20px;
             border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 16px;
-            transition: border-color 0.2s;
+            transition: transform 0.2s, border-color 0.2s;
         }
-        .folder-card:hover { border-color: var(--primary); }
+        .folder-card:hover { transform: translateY(-2px); border-color: var(--primary); }
         .folder-card .icon-circle {
             width: 52px; height: 52px; border-radius: 14px; background: rgba(16, 185, 129, 0.1);
             color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 28px;
         }
 
-        .tg-chat-list { display: flex; flex-direction: column; gap: 10px; padding: 10px 20px; }
-        .tg-chat-item {
-            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px;
-            padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer;
-        }
-        .tg-avatar {
-            width: 44px; height: 44px; border-radius: 12px; background: rgba(16, 185, 129, 0.1);
-            color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0;
-        }
-        .tg-chat-info { flex: 1; min-width: 0; }
-        .tg-chat-name { font-weight: 700; font-size: 16px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tg-chat-msg { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-
+        /* واجهة عرض القناة لكل مادة */
         .channel-container { display: none; flex-direction: column; }
         .channel-banner {
             background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%);
-            padding: 24px 20px; border-bottom: 1px solid var(--border-color);
+            padding: 24px 20px; border-bottom: 1px solid var(--border-color); position: relative;
         }
-        .channel-title { font-size: 22px; font-weight: 800; margin: 0; }
+        .channel-title { font-size: 22px; font-weight: 800; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px; }
+        .channel-subtitle { font-size: 14px; color: var(--text-muted); }
 
         .channel-feed { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
         .feed-card {
             background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
             padding: 16px; display: flex; flex-direction: column; gap: 12px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .feed-header { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
-        .feed-actions { display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px; }
+        .feed-actions { display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px; }
         .feed-btn {
             background: transparent; border: none; color: var(--primary); font-weight: 700;
             font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
         }
         .feed-btn.delete-btn { color: var(--danger); }
 
+        /* شريط التنقل السفلي الفاخر */
         .app-bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 600px; height: 70px; background: var(--card-bg);
             border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: var(--text-muted); cursor: pointer; font-size: 12px; font-weight: 600; width: 25%; height: 100%;
+            transition: color 0.2s;
         }
         .nav-item.active { color: var(--primary); }
         .nav-item .material-icons { font-size: 26px; margin-bottom: 2px; }
 
+        /* زر الإضافة العصري (+) المدمج كعنصر طافي حديث فوق الشريط السفلي */
         .fab-add {
             position: fixed; bottom: 85px; right: 20px;
             width: 56px; height: 56px; border-radius: 50%;
             background: var(--primary); color: #FFFFFF; display: flex;
             align-items: center; justify-content: center; cursor: pointer;
             box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
         }
+        .fab-add:hover { transform: scale(1.08); background-color: var(--primary-dark); }
         html[dir="rtl"] .fab-add { right: auto; left: 20px; }
 
-        .profile-view { display: none; padding: 24px 20px; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
+        /* واجهة اتصل بنا والمطور */
+        .contact-view { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+        .contact-card {
+            background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.2s;
+        }
+        .contact-card:hover { background: rgba(16,185,129,0.05); }
+
+        /* واجهة الإعدادات */
+        .settings-view { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+
+        /* واجهة الملف الشخصي الجديدة */
+        .profile-view { display: none; padding: 24px 20px; flex-direction: column; gap: 20px; align-items: center; }
         .profile-avatar-container {
-            width: 100px; height: 100px; border-radius: 50%; background: var(--card-bg);
+            width: 110px; height: 110px; border-radius: 50%; background: var(--card-bg);
             border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center;
-            color: var(--primary); font-size: 50px;
+            color: var(--primary); font-size: 56px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
         .profile-info-box {
             width: 100%; background: var(--card-bg); border-radius: 16px;
             border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 16px;
         }
         .profile-row-info { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .profile-row-info:last-child { border-bottom: none; }
+        .profile-row-info:last-child { border-bottom: none; padding-bottom: 0; }
         .profile-row-info span:first-child { color: var(--text-muted); font-size: 14px; }
         .profile-row-info span:last-child { font-weight: 700; color: var(--text-main); }
 
@@ -245,11 +272,10 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; padding: 20px; border: 1px solid var(--border-color); opacity: 0; transition: all 0.25s ease;
         }
         .modal.open { display: block; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        
-        .custom-file-upload { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(16, 185, 129, 0.08); border: 2px dashed var(--primary); padding: 24px; border-radius: 14px; cursor: pointer; color: var(--primary); font-weight: bold; }
-        .selected-file-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .app-footer { text-align: center; font-size: 13px; color: var(--text-muted); padding: 10px 0; margin-top: auto; }
+        .empty-placeholder { padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px; }
 
-        .upload-progress-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 13px; margin-top: 10px; }
+        .upload-progress-box { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; font-size: 13px; }
         .upload-progress-bar-bg { width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 6px; }
         .upload-progress-bar-fill { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
     </style>
@@ -258,18 +284,21 @@
 
 <div id="splashScreen">
     <span class="material-icons splash-logo">science</span>
-    <div style="font-size: 26px; font-weight: 800; color: #FFFFFF; margin-top: 10px;">Programme Chimie</div>
+    <div class="splash-title">Programme Chimie</div>
+    <div style="font-size:14px; color:var(--primary); margin-top:8px; font-weight:600;">Espace Universitaire Moderne...</div>
 </div>
 
 <div class="container">
     
+    <!-- لغة قبل تسجيل الدخول -->
     <div id="preAuthLang" class="pre-auth-lang">
-        <select id="preLangSelect" onchange="toggleLanguagePreAuth()" style="padding:6px; border-radius:8px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color); font-weight:600;">
+        <select id="preLangSelect" onchange="toggleLanguagePreAuth()" style="padding:6px; border-radius:8px; background:var(--card-bg); color:var(--text-main); border:1px solid var(--border-color);">
             <option value="fr" selected>Français</option>
             <option value="ar">العربية</option>
         </select>
     </div>
 
+    <!-- شاشة تسجيل الدخول -->
     <div id="authContainer" class="auth-box">
         <div style="text-align: center; margin-bottom: 10px;">
             <span class="material-icons" style="font-size: 56px; color: var(--primary);">account_circle</span>
@@ -288,18 +317,23 @@
         </div>
     </div>
 
+    <!-- الواجهة الرئيسية للتطبيق (بعد تسجيل الدخول) -->
     <div id="appContainer" style="display: none; flex-direction: column;">
+        <!-- شريط علوي أنيق -->
         <div class="app-header">
             <span id="btnBackToFolders" class="material-icons" style="cursor: pointer; font-size: 26px; display: none;" onclick="goBackToFolders()">arrow_back</span>
             <h2 id="appMainTitle">Programme Chimie</h2>
-            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="alert('Version 3.0.0')">info</span>
+            <span class="material-icons" style="cursor: pointer; font-size: 26px;" onclick="openAboutInfo()">info</span>
         </div>
 
+        <!-- زر الإضافة العصري والمبتكر (+) كعنصر عائم -->
         <div class="fab-add" onclick="openUploadModal()" id="fabAddBtn">
-            <span class="material-icons" style="font-size: 32px;">cloud_upload</span>
+            <span class="material-icons" style="font-size: 32px;">add</span>
         </div>
 
+        <!-- واجهة المواد (تتضمن المجلدات أولاً، ثم القنوات الخاصة بكل مادة) -->
         <div id="view-chats">
+            <!-- البحث والمصنفات (تظهر عندما لا نكون داخل قناة معينة) -->
             <div id="chatsHeaderArea">
                 <div class="search-box">
                     <div class="search-inner">
@@ -317,6 +351,7 @@
                 </div>
             </div>
 
+            <!-- عرض المجلدات الأساسية (L2, L3) -->
             <div id="foldersArea" class="folders-container">
                 <div class="folder-card" onclick="selectYearFolder('L2')">
                     <div class="icon-circle"><span class="material-icons">folder</span></div>
@@ -336,36 +371,42 @@
                 </div>
             </div>
 
+            <!-- قائمة المحادثات/المواد التابعة للسنة المختارة -->
             <div class="tg-chat-list" id="tgChatListContainer" style="display: none;"></div>
 
+            <!-- واجهة القناة الخاصة بمادة معينة -->
             <div id="channelArea" class="channel-container">
                 <div class="channel-banner">
                     <h3 id="channelMatTitle" class="channel-title">Module Title</h3>
-                    <div id="channelMatSub" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Filière Chimie</div>
+                    <div id="channelMatSub" class="channel-subtitle">Chimie Universitaire</div>
                 </div>
                 <div id="channelFeedContainer" class="channel-feed"></div>
             </div>
         </div>
 
-        <div id="view-contact" style="display: none; padding: 20px; flex-direction: column; gap: 16px;">
-            <h2 style="text-align: center;" id="txtContactHeading">Contactez-nous / اتصل بنا</h2>
-            <div class="folder-card" onclick="window.open('https://wa.me/22233039964','_blank')">
+        <!-- واجهة معلومات الاتصال بنا -->
+        <div id="view-contact" class="contact-view">
+            <h2 style="margin-bottom: 10px; font-weight: 800; text-align: center;" id="txtContactHeading">Contactez-nous / اتصل بنا</h2>
+            <div class="contact-card" onclick="window.open('https://wa.me/22233039964','_blank')">
                 <span class="material-icons" style="color: #25D366; font-size: 32px;">chat</span>
-                <div>
+                <div style="flex:1;">
                     <div style="font-weight: 700; font-size: 16px;">WhatsApp</div>
                     <div style="color: var(--text-muted); font-size: 14px;">+222 33 03 99 64</div>
                 </div>
+                <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
             </div>
-            <div class="folder-card" onclick="window.open('mailto:medlemin4303@gmail.com')">
+            <div class="contact-card" onclick="window.open('mailto:medlemin4303@gmail.com')">
                 <span class="material-icons" style="color: var(--primary); font-size: 32px;">email</span>
-                <div>
+                <div style="flex:1;">
                     <div style="font-weight: 700; font-size: 16px;">Email</div>
                     <div style="color: var(--text-muted); font-size: 14px;">medlemin4303@gmail.com</div>
                 </div>
+                <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
             </div>
         </div>
 
-        <div id="view-settings" style="display: none; padding: 20px; flex-direction: column; gap: 16px;">
+        <!-- واجهة الإعدادات -->
+        <div id="view-settings" class="settings-view">
             <h2 id="txtSettingsHeading">Paramètres</h2>
             <div class="auth-form" style="margin-top: 0;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -382,69 +423,110 @@
             </div>
         </div>
 
+        <!-- واجهة الملف الشخصي الحديثة بالكامل -->
         <div id="view-profile" class="profile-view">
-            <div class="profile-avatar-container"><span class="material-icons" style="font-size: 50px;">person</span></div>
-            <h2 id="txtProfileWelcome" style="margin: 0; font-weight: 800;">Mon Profil</h2>
-            <div class="profile-info-box">
-                <div class="profile-row-info"><span id="lblProfName">Nom</span><span id="valProfName">-</span></div>
-                <div class="profile-row-info"><span id="lblProfEmail">Email</span><span id="valProfEmail">-</span></div>
-                <div class="profile-row-info"><span id="lblProfBirth">Date de Naissance</span><span>15/09/2004</span></div>
-                <div class="profile-row-info"><span id="lblProfJoined">Rejoint le</span><span id="valProfJoined">-</span></div>
+            <div class="profile-avatar-container">
+                <span class="material-icons">person</span>
             </div>
+            <h2 id="txtProfileWelcome" style="margin: 0; font-weight: 800;">Mon Profil</h2>
+            
+            <div class="profile-info-box">
+                <div class="profile-row-info">
+                    <span id="lblProfName">Nom</span>
+                    <span id="valProfName">-</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfEmail">Email</span>
+                    <span id="valProfEmail">-</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfBirth">Date de Naissance</span>
+                    <span id="valProfBirth">15/09/2004</span>
+                </div>
+                <div class="profile-row-info">
+                    <span id="lblProfJoined">Rejoint le</span>
+                    <span id="valProfJoined">-</span>
+                </div>
+            </div>
+
+            <!-- تم نقل إجراءات الخروج والحذف هنا بالكامل تماشياً مع طلبك -->
             <button class="btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary); margin-top: 10px;" onclick="logoutUser()" id="btnLogout">Déconnexion</button>
             <button class="btn-outline" id="btnDeleteAccount" style="width: 100%; border-color: var(--danger); color: var(--danger);" onclick="deleteUserAccount()">Supprimer le compte</button>
         </div>
 
+        <!-- شريط التنقل السفلي الفخم (4 أيقونات) -->
         <div class="app-bottom-nav">
-            <div class="nav-item active" id="nav-chats" onclick="switchView('chats')"><span class="material-icons">school</span><span id="navLblChats">Matières</span></div>
-            <div class="nav-item" id="nav-contact" onclick="switchView('contact')"><span class="material-icons">contact_support</span><span id="navLblContact">Contact</span></div>
-            <div class="nav-item" id="nav-settings" onclick="switchView('settings')"><span class="material-icons">settings</span><span id="navLblSettings">Paramètres</span></div>
-            <div class="nav-item" id="nav-profile" onclick="switchView('profile')"><span class="material-icons">account_circle</span><span id="navLblProfile">Profil</span></div>
+            <div class="nav-item active" id="nav-chats" onclick="switchView('chats')">
+                <span class="material-icons">school</span>
+                <span id="navLblChats">Matières</span>
+            </div>
+            <div class="nav-item" id="nav-contact" onclick="switchView('contact')">
+                <span class="material-icons">contact_support</span>
+                <span id="navLblContact">Contact</span>
+            </div>
+            <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
+                <span class="material-icons">settings</span>
+                <span id="navLblSettings">Paramètres</span>
+            </div>
+            <div class="nav-item" id="nav-profile" onclick="switchView('profile')">
+                <span class="material-icons">account_circle</span>
+                <span id="navLblProfile">Profil</span>
+            </div>
+        </div>
+
+        <div class="app-footer">
+            <p style="margin: 0; font-weight: 700;">Programme Chimie &copy; 2026</p>
         </div>
     </div>
 </div>
 
+<!-- مودال الرفع الذكي والمبسط -->
 <div class="modal" id="uploadModal">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 style="margin:0;" id="txtUploadModalTitle">رفع ملف جديد</h3>
         <span class="material-icons" style="cursor: pointer; color: var(--danger);" onclick="closeModal('uploadModal')">close</span>
     </div>
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-        <p style="font-size: 13px; color: var(--text-muted); margin: 0;" id="txtUploadNotice">التصنيف والمسار يتم تحديدهما تلقائياً عبر قراءة اسم الملف الذكي.</p>
-        
-        <div class="custom-file-upload" onclick="document.getElementById('fileInput').click()">
-            <span class="material-icons">folder_open</span>
-            <span id="txtSelectFileBtnLabel">Choisir un fichier PDF</span>
-        </div>
-        <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="onFileSelectedCustom()" style="display:none;">
-
-        <div class="selected-file-box" id="selectedFileBox">
-            <span id="lblSelectedFileName" style="font-weight:600; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">-</span>
-            <span class="material-icons" style="color:var(--danger); cursor:pointer;" onclick="removeSelectedFile()">cancel</span>
-        </div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <p style="font-size: 13px; color: var(--text-muted); margin: 0;" id="txtUploadNotice">النظام سيتعرف تلقائياً على تصنيف ومسار الملف المرفوع من خلال اسمه.</p>
+        <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFileAutoUploadDirectly()" style="padding:10px; background:var(--bg-color); color:var(--text-main); border-radius:8px; border:1px solid var(--border-color);">
 
         <div class="upload-progress-box" id="uploadProgressBox">
             <div style="display:flex; justify-content:space-between; font-weight:700;">
-                <span id="txtUploadProgressLabel">Téléversement...</span>
+                <span id="txtUploadProgressLabel">Téléversement en cours...</span>
                 <span id="txtUploadProgressPercent">0%</span>
             </div>
             <div class="upload-progress-bar-bg"><div class="upload-progress-bar-fill" id="uploadProgressBarFill"></div></div>
         </div>
-
-        <button class="btn-prime" onclick="processFileUploadAction()" id="btnConfirmUploadAction" disabled>Confirm & Upload</button>
     </div>
 </div>
 
 <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBsxQsKhIe1d9y_fX1JOcJ1qyFU71eZ9cY",
+        authDomain: "mychemistryapp.firebaseapp.com",
+        projectId: "mychemistryapp",
+        storageBucket: "mychemistryapp.firebasestorage.app",
+        messagingSenderId: "171699274175",
+        appId: "1:171699274175:web:1b4cce26731442df6c210a"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // هيكلية المواد الأكاديمية (بدون L1)
     const chemistryArchitecture = {
         L2: {
-            modulesCount: 17,
-            semestres: ["S3", "S4"],
+            modulesCount: 17, semestres: ["S3", "S4"],
+            S3: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication"],
+            S4: ["Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"],
             matières: ["Chimie des solutions", "Chimie organique descriptive", "Projet personnel de l'étudiant (PPE)", "Stéréochimie", "Probabilités discrètes", "Circuits et Signaux", "Chimie minérale", "Techniques de communication", "Anglais 2", "Méthodes d'analyses courantes I", "Contrôle de procédés", "Cinétique et catalyse", "Chimie analytique", "Méthodes spectroscopiques I", "Certificat informatique et internet (C2i)", "Thermodynamique chimique / Cristallographie", "Mécanismes reactionnels"]
         },
         L3: {
-            modulesCount: 10,
-            semestres: ["S5", "S6"],
+            modulesCount: 10, semestres: ["S5", "S6"],
+            S5: ["Anglais 3", "Méthodes spectroscopiques PM II", "Rédaction scientifique", "Réactivité et stéréochimie dynamique", "Méthodes séparatives", "Chimie quantique", "Électrochimie", "Thermodynamique chimique II", "Méthodes d'analyses courantes II", "Chimie des matériaux"],
+            S6: ["Chimie de coordinations", "Chimie du pétrole et des gaz", "Économie", "Chimie de l'eau", "Synthèse organique", "Chimie fine", "Droit", "Projet de fin d'études (PFE)", "Chimie verte"],
             matières: ["Anglais 3", "Méthodes spectroscopiques PM II", "Rédaction scientifique", "Réactivité et stéréochimie dynamique", "Méthodes séparatives", "Chimie quantique", "Électrochimie", "Thermodynamique chimique II", "Méthodes d'analyses courantes II", "Chimie des matériaux", "Chimie de coordinations", "Chimie du pétrole et des gaz", "Économie", "Chimie de l'eau", "Synthèse organique", "Chimie fine", "Droit", "Projet de fin d'études (PFE)", "Chimie verte"]
         }
     };
@@ -453,9 +535,8 @@
     let selectedFilterTag = 'all';
     let currentFetchedFiles = [];
     let currentLang = 'fr';
-    let currentSelectedYearFolder = '';
-    let activeChannelModule = '';
-    let globalSelectedFile = null;
+    let currentSelectedYearFolder = ''; // تتبع المجلد النشط
+    let activeChannelModule = ''; // المادة النشطة المعروضة كقناة
 
     const dictionary = {
         fr: {
@@ -466,7 +547,8 @@
             filterAll: "Tout voir", filterCours: "Cours", filterTd: "TD", filterTp: "TP", filterExamen: "Archives",
             settingsHeading: "Paramètres", darkMode: "Mode sombre", optLanguage: "Langue / اللغة", deleteAccount: "Supprimer le compte",
             navChats: "Matières", navContact: "Contact", navSettings: "Paramètres", navProfile: "Profil",
-            uploadModalTitle: "Téléverser un fichier", folderL2Title: "Deuxième Année (L2)", folderL3Title: "Troisième Année (L3)",
+            uploadModalTitle: "Téléverser un fichier", btnSaveUpload: "Téléverser",
+            copiedMsg: "Copié dans le presse-papiers", folderL2Title: "Deuxième Année (L2)", folderL3Title: "Troisième Année (L3)",
             welcomeProfile: "Mon Profil", lblName: "Nom", lblBirth: "Date de Naissance", lblJoined: "Rejoint le", logoutBtn: "Déconnexion"
         },
         ar: {
@@ -477,7 +559,8 @@
             filterAll: "الكل", filterCours: "دروس", filterTd: "TD", filterTp: "TP", filterExamen: "أرشيف",
             settingsHeading: "الإعدادات", darkMode: "الوضع الداكن", optLanguage: "Langue / اللغة", deleteAccount: "حذف الحساب",
             navChats: "المواد", navContact: "التواصل", navSettings: "الإعدادات", navProfile: "حسابي",
-            uploadModalTitle: "رفع ملف جديد", folderL2Title: "السنة الثانية (L2)", folderL3Title: "السنة الثالثة (L3)",
+            uploadModalTitle: "رفع ملف جديد", btnSaveUpload: "رفع وتأكيد",
+            copiedMsg: "تم النسخ", folderL2Title: "السنة الثانية (L2)", folderL3Title: "السنة الثالثة (L3)",
             welcomeProfile: "ملفي الشخصي", lblName: "الاسم", lblBirth: "تاريخ الميلاد", lblJoined: "تاريخ الانضمام", logoutBtn: "تسجيل الخروج"
         }
     };
@@ -503,13 +586,20 @@
         }
     };
 
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
+        }, 1000);
+    });
+
     auth.onAuthStateChanged(user => {
         if(user) {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('preAuthLang').style.display = 'none';
             document.getElementById('appContainer').style.display = 'flex';
             syncUserProfileInfo(user);
-            fetchUserFilesRealtime();
+            fetchUserFilesRealtime(user.uid);
         } else {
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('authContainer').style.display = 'block';
@@ -525,7 +615,9 @@
         
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`nav-${viewName}`).classList.add('active');
-        document.getElementById('fabAddBtn').style.display = (viewName === 'chats') ? 'flex' : 'none';
+
+        // الحفاظ على زر الإضافة الطافي ظاهراً في شاشتي المواد والتواصل لإعطاء طابع عصري
+        document.getElementById('fabAddBtn').style.display = (viewName === 'chats' || viewName === 'contact') ? 'flex' : 'none';
     }
 
     function selectYearFolder(year) {
@@ -538,11 +630,13 @@
 
     function goBackToFolders() {
         if (activeChannelModule !== '') {
+            // العودة من القناة المفتوحة إلى قائمة المواد
             activeChannelModule = '';
             document.getElementById('channelArea').style.display = 'none';
             document.getElementById('tgChatListContainer').style.display = 'flex';
             document.getElementById('chatsHeaderArea').style.display = 'block';
         } else {
+            // العودة من قائمة المواد إلى مجلدات السنوات
             currentSelectedYearFolder = '';
             document.getElementById('tgChatListContainer').style.display = 'none';
             document.getElementById('foldersArea').style.display = 'flex';
@@ -550,23 +644,31 @@
         }
     }
 
-    function fetchUserFilesRealtime() {
+    function fetchUserFilesRealtime(uid) {
+        // جلب جميع ملفات المادة المتاحة لجميع المستخدمين بالتطبيق
         db.collection("files").onSnapshot(snapshot => {
             currentFetchedFiles = [];
             snapshot.forEach(doc => { currentFetchedFiles.push(Object.assign({ id: doc.id }, doc.data())); });
-            if (activeChannelModule !== '') openMaterialChannel(activeChannelModule);
-            else renderTelegramLayout();
-        });
+            if (activeChannelModule !== '') {
+                openMaterialChannel(activeChannelModule);
+            } else {
+                renderTelegramLayout();
+            }
+        }, err => console.warn('Realtime fetch error:', err));
     }
 
+    // بناء واجهة قائمة المواد تماثلاً مع المفهوم الهجين الفاخر
     function renderTelegramLayout() {
         const container = document.getElementById('tgChatListContainer');
         if (!currentSelectedYearFolder) return;
+
         const searchQuery = document.getElementById('appSearch').value.toLowerCase();
         container.innerHTML = '';
 
         let totalRendered = 0;
-        chemistryArchitecture[currentSelectedYearFolder].matières.forEach(matName => {
+        const currentYearData = chemistryArchitecture[currentSelectedYearFolder];
+
+        currentYearData.matières.forEach(matName => {
             const filesForThisModule = currentFetchedFiles.filter(f => {
                 return f.year === currentSelectedYearFolder && f.mod === matName && 
                        (selectedFilterTag === 'all' || f.tag === selectedFilterTag) &&
@@ -576,17 +678,23 @@
             if(searchQuery !== '' && filesForThisModule.length === 0) return;
             totalRendered++;
 
-            const cardRow = document.createElement('div');
-            cardRow.className = 'tg-chat-item';
-            cardRow.innerHTML = `
-                <div class="tg-avatar">${matName.charAt(0).toUpperCase()}</div>
+            const initialLetter = matName.charAt(0).toUpperCase();
+            const filesCount = filesForThisModule.length;
+
+            const chatRow = document.createElement('div');
+            chatRow.className = 'tg-chat-item';
+            chatRow.innerHTML = `
+                <div class="tg-avatar" style="background-color: var(--primary);">${initialLetter}</div>
                 <div class="tg-chat-info">
-                    <div class="tg-chat-top"><div class="tg-chat-name">${matName}</div></div>
-                    <div class="tg-chat-msg">${filesForThisModule.length} Document(s) disponibles</div>
+                    <div class="tg-chat-top">
+                        <div class="tg-chat-name">${matName}</div>
+                        <div class="tg-chat-meta">${currentSelectedYearFolder}</div>
+                    </div>
+                    <div class="tg-chat-msg">${filesCount} Document(s) disponible(s)</div>
                 </div>
             `;
-            cardRow.addEventListener('click', () => openMaterialChannel(matName));
-            container.appendChild(cardRow);
+            chatRow.addEventListener('click', () => openMaterialChannel(matName));
+            container.appendChild(chatRow);
         });
 
         if(totalRendered === 0) {
@@ -594,135 +702,69 @@
         }
     }
 
+    // فتح صفحة المادة بشكل قناة مستقلة وراقية
     function openMaterialChannel(matName) {
         activeChannelModule = matName;
         document.getElementById('tgChatListContainer').style.display = 'none';
         document.getElementById('chatsHeaderArea').style.display = 'none';
         document.getElementById('btnBackToFolders').style.display = 'block';
-        document.getElementById('channelArea').style.display = 'flex';
+
+        const channelArea = document.getElementById('channelArea');
+        channelArea.style.display = 'flex';
+
         document.getElementById('channelMatTitle').textContent = matName;
+        document.getElementById('channelMatSub').textContent = `Filière Chimie • ${currentSelectedYearFolder}`;
 
         const feedContainer = document.getElementById('channelFeedContainer');
         feedContainer.innerHTML = '';
-        const filtered = currentFetchedFiles.filter(f => f.year === currentSelectedYearFolder && f.mod === matName);
 
-        if(filtered.length === 0) {
-            feedContainer.innerHTML = `<div class="empty-placeholder">Aucun fichier disponible</div>`;
+        const filesForThisModule = currentFetchedFiles.filter(f => f.year === currentSelectedYearFolder && f.mod === matName);
+
+        if (filesForThisModule.length === 0) {
+            feedContainer.innerHTML = `<div class="empty-placeholder">Aucun fichier ou message partagé dans ce module.</div>`;
             return;
         }
 
-        filtered.forEach(file => {
-            const card = document.createElement('div');
-            card.className = 'feed-card';
+        filesForThisModule.forEach(file => {
+            const feedCard = document.createElement('div');
+            feedCard.className = 'feed-card';
+            
             const fileDate = file.createdAt ? file.createdAt.toDate().toLocaleDateString('fr-FR') : '-';
-            card.innerHTML = `
-                <div class="feed-header"><span class="material-icons" style="font-size:16px;">schedule</span> <span>${fileDate}</span> <span style="margin-left:auto; color:var(--primary); font-weight:700;">#${file.tag}</span></div>
-                <div style="font-weight:700; font-size:15px; word-break:break-all;">📄 ${file.name}</div>
+            
+            feedCard.innerHTML = `
+                <div class="feed-header">
+                    <span class="material-icons" style="font-size: 16px;">schedule</span>
+                    <span>${fileDate}</span>
+                    <span style="margin-left: auto; color: var(--primary); font-weight:700;">#${file.tag}</span>
+                </div>
+                <div style="font-weight: 700; font-size: 16px; margin-top: 4px;">📄 ${file.name}</div>
                 <div class="feed-actions">
-                    <button class="feed-btn open-f"><span class="material-icons" style="font-size:16px;">visibility</span> Visualiser</button>
+                    <button class="feed-btn open-f"><span class="material-icons" style="font-size: 18px;">visibility</span> Visualiser</button>
+                    <button class="feed-btn download-f"><span class="material-icons" style="font-size: 18px;">download</span> Télécharger</button>
                 </div>
             `;
-            card.querySelector('.open-f').addEventListener('click', () => window.open(file.url, '_blank'));
-            
+
+            feedCard.querySelector('.open-f').addEventListener('click', () => window.open(file.url, '_blank'));
+            feedCard.querySelector('.download-f').addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = file.url;
+                link.download = file.name;
+                link.target = '_blank';
+                link.click();
+            });
+
+            // خيار الحذف لمالك الملف
             if (file.userId === auth.currentUser.uid) {
-                const actions = card.querySelector('.feed-actions');
-                const del = document.createElement('button');
-                del.className = 'feed-btn delete-btn';
-                del.innerHTML = `<span class="material-icons" style="font-size:16px;">delete</span> Supprimer`;
-                del.addEventListener('click', () => deleteFileById(file.id));
-                actions.insertBefore(del, actions.firstChild);
+                const actionsArea = feedCard.querySelector('.feed-actions');
+                const delBtn = document.createElement('button');
+                delBtn.className = 'feed-btn delete-btn';
+                delBtn.innerHTML = `<span class="material-icons" style="font-size: 18px;">delete</span> Supprimer`;
+                delBtn.addEventListener('click', () => deleteFileById(file.id));
+                actionsArea.insertBefore(delBtn, actionsArea.firstChild);
             }
-            feedContainer.appendChild(card);
+
+            feedContainer.appendChild(feedCard);
         });
-    }
-
-    function onFileSelectedCustom() {
-        const fileInput = document.getElementById('fileInput');
-        if(fileInput.files.length === 0) return;
-        const file = fileInput.files[0];
-
-        if(!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-            alert('PDF files only!');
-            fileInput.value = '';
-            return;
-        }
-
-        globalSelectedFile = file;
-        document.getElementById('lblSelectedFileName').textContent = file.name;
-        document.getElementById('selectedFileBox').style.display = 'flex';
-        document.getElementById('btnConfirmUploadAction').disabled = false;
-    }
-
-    function removeSelectedFile() {
-        globalSelectedFile = null;
-        document.getElementById('fileInput').value = '';
-        document.getElementById('selectedFileBox').style.display = 'none';
-        document.getElementById('btnConfirmUploadAction').disabled = true;
-    }
-
-    function resetUploadModalUI() {
-        globalSelectedFile = null;
-        document.getElementById('fileInput').value = '';
-        document.getElementById('selectedFileBox').style.display = 'none';
-        document.getElementById('uploadProgressBox').style.display = 'none';
-        document.getElementById('uploadProgressBarFill').style.width = '0%';
-        document.getElementById('btnConfirmUploadAction').disabled = true;
-    }
-
-    function processFileUploadAction() {
-        if(!globalSelectedFile) return;
-        document.getElementById('btnConfirmUploadAction').disabled = true;
-
-        const nameLower = globalSelectedFile.name.toLowerCase();
-        let y = "L2", m = "Chimie des solutions", t = "Cours";
-
-        if(nameLower.includes('l3')) y = "L3";
-        
-        const currentYearMatières = chemistryArchitecture[y].matières;
-        for(let mat of currentYearMatières) {
-            if(nameLower.includes(mat.toLowerCase().split(' ')[0])) { m = mat; break; }
-        }
-
-        if(nameLower.includes('td')) t = "TD";
-        else if(nameLower.includes('tp')) t = "TP";
-        else if(nameLower.includes('exam') || nameLower.includes('archiv')) t = "Examen";
-
-        const storagePath = `files/${auth.currentUser.uid}/${Date.now()}_${globalSelectedFile.name}`;
-        const uploadTask = storage.ref(storagePath).put(globalSelectedFile);
-        const pBox = document.getElementById('uploadProgressBox');
-        pBox.style.display = 'block';
-
-        uploadTask.on('state_changed', snap => {
-            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-            document.getElementById('uploadProgressBarFill').style.width = pct + '%';
-            document.getElementById('txtUploadProgressPercent').textContent = pct + '%';
-        }, err => {
-            alert(err.message);
-            resetUploadModalUI();
-        }, () => {
-            uploadTask.snapshot.ref.getDownloadURL().then(url => {
-                return db.collection("files").add({
-                    userId: auth.currentUser.uid, name: globalSelectedFile.name, url: url, storagePath: storagePath,
-                    year: y, mod: m, tag: t, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }).then(() => {
-                closeModal('uploadModal');
-                alert('Uploaded successfully!');
-            });
-        });
-    }
-
-    function deleteFileById(id) {
-        const file = currentFetchedFiles.find(f => f.id === id);
-        if(!confirm("Supprimer ce fichier ?")) return;
-        const deleteDoc = () => db.collection("files").doc(id).delete();
-        if (file && file.storagePath) {
-            storage.ref(file.storagePath).delete().then(deleteDoc).catch(err => {
-                if (err.code === 'storage/object-not-found') deleteDoc();
-            });
-        } else {
-            deleteDoc();
-        }
     }
 
     function setFilter(tag) {
@@ -732,13 +774,135 @@
         renderTelegramLayout();
     }
 
-    function openUploadModal() { openModal('uploadModal'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); resetUploadModalUI(); }
+    function triggerSearch() { renderTelegramLayout(); }
+    
     function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); resetUploadModalUI(); }
+    function openUploadModal() { openModal('uploadModal'); }
+
+    function resetUploadModalUI() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('uploadProgressBox').style.display = 'none';
+        document.getElementById('uploadProgressBarFill').style.width = '0%';
+    }
+
+    // التعرف التلقائي الذكي على تفاصيل الملف عبر اسمه
+    function handleFileAutoUploadDirectly() {
+        const fileInput = document.getElementById('fileInput');
+        if(fileInput.files.length === 0) return;
+        const file = fileInput.files[0];
+
+        const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (!isPdf) {
+            alert(currentLang === 'ar' ? 'يُسمح فقط برفع ملفات PDF.' : "Seuls les fichiers PDF sont autorisés.");
+            fileInput.value = '';
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            alert((currentLang === 'ar' ? `حجم الملف يتجاوز ${MAX_FILE_SIZE_MB} ميغابايت.` : `Le fichier dépasse ${MAX_FILE_SIZE_MB} Mo.`));
+            fileInput.value = '';
+            return;
+        }
+
+        // ذكاء اصطناعي محلي لقراءة اسم الملف وتحديد المسار والنوع
+        const nameLower = file.name.toLowerCase();
+        let detectedYear = "L2"; // افتراضي
+        let detectedSem = "S3";
+        let detectedModule = "Chimie des solutions";
+        let detectedTag = "Cours";
+
+        // 1. تحديد السنة
+        if (nameLower.includes('l3') || nameLower.includes('s5') || nameLower.includes('s6')) {
+            detectedYear = "L3";
+            detectedSem = "S5";
+            detectedModule = "Anglais 3";
+        }
+
+        // 2. تحديد الفصل الدراسي
+        if (nameLower.includes('s3')) detectedSem = 'S3';
+        else if (nameLower.includes('s4')) detectedSem = 'S4';
+        else if (nameLower.includes('s5')) detectedSem = 'S5';
+        else if (nameLower.includes('s6')) detectedSem = 'S6';
+
+        // 3. تحديد المادة
+        const yearMatières = chemistryArchitecture[detectedYear].matières;
+        for (let mat of yearMatières) {
+            let keywords = mat.toLowerCase().split(' ');
+            for (let word of keywords) {
+                if (word.length > 3 && nameLower.includes(word)) {
+                    detectedModule = mat;
+                    break;
+                }
+            }
+        }
+
+        // 4. تحديد النوع
+        if (nameLower.includes('td')) detectedTag = 'TD';
+        else if (nameLower.includes('tp')) detectedTag = 'TP';
+        else if (nameLower.includes('exam') || nameLower.includes('archiv')) detectedTag = 'Examen';
+
+        // بدء عملية الرفع الفورية
+        uploadFileToFirebase(file, detectedYear, detectedSem, detectedModule, detectedTag);
+    }
+
+    function uploadFileToFirebase(file, year, sem, mod, tag) {
+        const uid = auth.currentUser.uid;
+        const progressBox = document.getElementById('uploadProgressBox');
+        const progressFill = document.getElementById('uploadProgressBarFill');
+        const progressPercent = document.getElementById('txtUploadProgressPercent');
+
+        progressBox.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressPercent.textContent = '0%';
+
+        const safeName = file.name.replace(/[^a-zA-Z0-9._\-]/g, '_');
+        const storagePath = `files/${uid}/${Date.now()}_${safeName}`;
+        const uploadTask = storage.ref(storagePath).put(file);
+
+        uploadTask.on('state_changed', snapshot => {
+            const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            progressFill.style.width = pct + '%';
+            progressPercent.textContent = pct + '%';
+        }, error => {
+            progressBox.style.display = 'none';
+            alert((currentLang === 'ar' ? 'فشل رفع الملف: ' : "Échec de l'envoi : ") + error.message);
+        }, () => {
+            uploadTask.snapshot.ref.getDownloadURL().then(url => {
+                return db.collection("files").add({
+                    userId: uid, name: file.name, url: url, storagePath: storagePath, size: file.size,
+                    year: year, sem: sem, mod: mod, tag: tag, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }).then(() => {
+                closeModal('uploadModal');
+                alert(currentLang === 'ar' ? 'تم رفع وحفظ الملف وتصنيفه بنجاح!' : "Fichier téléversé et classé avec succès !");
+            }).catch(err => {
+                progressBox.style.display = 'none';
+                alert((currentLang === 'ar' ? 'فشل حفظ بيانات الملف: ' : "Échec de l'enregistrement : ") + err.message);
+            });
+        });
+    }
+
+    function deleteFileById(id) {
+        const file = currentFetchedFiles.find(f => f.id === id);
+        const msg = currentLang === 'ar' ? 'حذف هذا الملف نهائياً؟' : "Supprimer ce fichier définitivement ?";
+        if(!confirm(msg)) return;
+        
+        const deleteDoc = () => db.collection("files").doc(id).delete();
+        if (file && file.storagePath) {
+            storage.ref(file.storagePath).delete().then(deleteDoc).catch(err => {
+                if (err.code === 'storage/object-not-found') deleteDoc();
+                else alert((currentLang === 'ar' ? 'فشل الحذف: ' : 'Échec de la suppression : ') + err.message);
+            });
+        } else {
+            deleteDoc();
+        }
+    }
 
     function syncUserProfileInfo(user) {
         document.getElementById('valProfEmail').textContent = user.email || "Compte Externe";
-        document.getElementById('valProfName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "Student");
+        document.getElementById('valProfName').textContent = user.displayName || (user.email ? user.email.split('@')[0] : "Etudiant");
+        
         db.collection("users").doc(user.uid).get().then(doc => {
             if(doc.exists && doc.data().createdAt) {
                 document.getElementById('valProfJoined').textContent = doc.data().createdAt.toDate().toLocaleDateString('fr-FR');
@@ -751,42 +915,147 @@
     function handleAuth() {
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value;
-        auth.signInWithEmailAndPassword(email, password).catch(() => auth.createUserWithEmailAndPassword(email, password));
+        const errEmailEl = document.getElementById('errEmail');
+        const errPassEl = document.getElementById('errPassword');
+        const errGeneralEl = document.getElementById('errAuthGeneral');
+        errEmailEl.style.display = 'none';
+        errPassEl.style.display = 'none';
+        errGeneralEl.style.display = 'none';
+
+        let hasError = false;
+        if(!email.includes('@') || !email.includes('.')) { errEmailEl.style.display = 'block'; hasError = true; }
+        if(password.length < 6) { errPassEl.style.display = 'block'; hasError = true; }
+        if(hasError) return;
+
+        const btn = document.getElementById('btnAuthAction');
+        btn.disabled = true;
+
+        auth.signInWithEmailAndPassword(email, password).then(() => {
+            btn.disabled = false;
+        }).catch(err => {
+            if(err.code === 'auth/user-not-found') {
+                auth.createUserWithEmailAndPassword(email, password).then(cred => {
+                    db.collection("users").doc(cred.user.uid).set({
+                        email: email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    btn.disabled = false;
+                }).catch(createErr => {
+                    btn.disabled = false;
+                    const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+                    errGeneralEl.textContent = dict[createErr.code] || dict.default;
+                    errGeneralEl.style.display = 'block';
+                });
+            } else {
+                btn.disabled = false;
+                const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+                errGeneralEl.textContent = dict[err.code] || dict.default;
+                errGeneralEl.style.display = 'block';
+            }
+        });
     }
 
-    function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-    function loginWithPhone() {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
-        const num = prompt("Phone (+222...):");
-        if(num) auth.signInWithPhoneNumber(num, window.recaptchaVerifier).then(res => res.confirm(prompt("Code:")));
+    function loginWithGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).catch(err => {
+            const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+            alert(dict[err.code] || dict.default);
+        });
     }
-    
+
+    function loginWithPhone() {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+        }
+        const num = prompt(currentLang === 'ar' ? "الرقم (+222...):" : "Numéro (+222...):");
+        if (!num) return;
+        auth.signInWithPhoneNumber(num, window.recaptchaVerifier).then(res => {
+            const code = prompt(currentLang === 'ar' ? "رمز التحقق:" : "Code de vérification:");
+            if (!code) return;
+            return res.confirm(code);
+        }).catch(err => {
+            const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+            alert(dict[err.code] || dict.default);
+        });
+    }
+
     function logoutUser() { auth.signOut(); }
     function toggleThemeMode() { document.documentElement.setAttribute('data-theme', document.getElementById('darkToggle').checked ? 'dark' : 'light'); }
-    function deleteUserAccount() { if(confirm("Delete Account?")) auth.currentUser.delete(); }
-    function toggleLanguagePreAuth() { document.getElementById('langSelect').value = document.getElementById('preLangSelect').value; toggleLanguage(); }
     
+    function deleteUserAccount() {
+        const msg = currentLang === 'ar' ? "حذف الحساب نهائياً؟" : "Supprimer le compte définitivement ?";
+        if(confirm(msg)) {
+            auth.currentUser.delete().catch(err => {
+                const dict = authErrorMessages[currentLang] || authErrorMessages.fr;
+                alert(dict[err.code] || dict.default);
+            });
+        }
+    }
+
+    function toggleLanguagePreAuth() {
+        const val = document.getElementById('preLangSelect').value;
+        document.getElementById('langSelect').value = val;
+        toggleLanguage();
+    }
+
     function toggleLanguage() {
         currentLang = document.getElementById('langSelect').value;
         document.getElementById('preLangSelect').value = currentLang;
         const dict = dictionary[currentLang];
-        document.getElementById('appHtml').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+        const isAr = currentLang === 'ar';
+
+        document.getElementById('appHtml').setAttribute('dir', isAr ? 'rtl' : 'ltr');
+        document.getElementById('appHtml').setAttribute('lang', currentLang);
 
         document.getElementById('txtAuthTitle').textContent = dict.authTitle;
         document.getElementById('authEmail').placeholder = dict.emailPh;
+        document.getElementById('authPassword').placeholder = dict.passPh;
+        document.getElementById('btnAuthAction').textContent = dict.authBtn;
+        document.getElementById('errEmail').textContent = dict.errEmail;
+        document.getElementById('errPassword').textContent = dict.errPassword;
+
+        const googleBtn = document.getElementById('btnGoogleLogin');
+        googleBtn.childNodes[googleBtn.childNodes.length - 1].textContent = ' ' + dict.googleBtn;
+        const phoneBtn = document.getElementById('btnPhoneLogin');
+        phoneBtn.childNodes[phoneBtn.childNodes.length - 1].textContent = ' ' + dict.phoneBtn;
+
         document.getElementById('appMainTitle').textContent = dict.mainTitle;
         document.getElementById('appSearch').placeholder = dict.searchPh;
+
         document.getElementById('filter-all').textContent = dict.filterAll;
+        document.getElementById('filter-cours').textContent = dict.filterCours;
+        document.getElementById('filter-td').textContent = dict.filterTd;
+        document.getElementById('filter-tp').textContent = dict.filterTp;
+        document.getElementById('filter-examen').textContent = dict.filterExamen;
+
         document.getElementById('txtSettingsHeading').textContent = dict.settingsHeading;
+        document.getElementById('optDarkMode').textContent = dict.darkMode;
+        document.getElementById('optLanguage').textContent = dict.optLanguage;
+
         document.getElementById('navLblChats').textContent = dict.navChats;
         document.getElementById('navLblContact').textContent = dict.navContact;
         document.getElementById('navLblSettings').textContent = dict.navSettings;
         document.getElementById('navLblProfile').textContent = dict.navProfile;
+
+        document.getElementById('txtUploadModalTitle').textContent = dict.uploadModalTitle;
         document.getElementById('folderL2Title').textContent = dict.folderL2Title;
         document.getElementById('folderL3Title').textContent = dict.folderL3Title;
+
         document.getElementById('txtProfileWelcome').textContent = dict.welcomeProfile;
-        
-        if(currentSelectedYearFolder) renderTelegramLayout();
+        document.getElementById('lblProfName').textContent = dict.lblName;
+        document.getElementById('lblProfBirth').textContent = dict.lblBirth;
+        document.getElementById('lblProfJoined').textContent = dict.lblJoined;
+        document.getElementById('btnLogout').textContent = dict.logoutBtn;
+        document.getElementById('btnDeleteAccount').textContent = dict.deleteAccount;
+
+        if (activeChannelModule !== '') {
+            openMaterialChannel(activeChannelModule);
+        } else {
+            renderTelegramLayout();
+        }
+    }
+
+    function openAboutInfo() {
+        alert(currentLang === 'ar' ? 'برنامج الكيمياء - منصة دراسية متقدمة' : "Programme Chimie - Plateforme d'étude avancée");
     }
 </script>
 </body>
